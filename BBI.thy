@@ -8,15 +8,10 @@ theory BBI
 begin
 
 section "BBI formula"
-(* First we declare a new type called atom which represents atomic proposition, typedecl allows Isabelle aware the existence of atom without defining it*)
-typedecl atom
 
 
-(* We now define a variable which have a natural number associate with it. In this way we can genereate inifinte varaiables *)
-datatype var = P nat
-
-(* Here we define a constant for proposition variable. This means atomic proposition is  var maps to a bool type. For example,P 0 is map to True; P1 is map to False and so on*)
-consts atom :: "var \<Rightarrow> bool"
+(* We define a variable which is indexed by natural number. In this way we can genereate inifinte atomic proposition varaiables *)
+datatype atom = P nat
 
 (* With inifinte proposition variablse we can now define BBI formula. N.B. Capial M means the connective is a multiplicative connective *)
 datatype BBI_form = Atom atom
@@ -27,7 +22,13 @@ datatype BBI_form = Atom atom
   | Dis BBI_form BBI_form
   | Mdis BBI_form BBI_form
 
-section "Classical Logic Axioms"
+(* We now define a constant  which can evaluate BBI_form to Boolean type but we dont define how it is done*)
+consts evalF :: "BBI_form \<Rightarrow> bool" 
+
+(* An automatic induction proof for any BBI formula you can induct the next BBI formula *)
+lemma BBI_induc: "BBI_form \<Longrightarrow> BBI_form"
+proof auto
+qed
 
 
 
