@@ -27,8 +27,11 @@ datatype Structure =
 | Comma Structure Structure       (infix "," 101)
 | DotArrow Structure Structure    (infix "\<comment>\<circ>" 101)
 
-(* Following code is an idea to define what is valid for structures in loging \<LL>*)
-type_synonym valid = "Structure \<Rightarrow> Structure \<Rightarrow> bool" ( "\<turnstile>")
+(* Following code is an idea to define what is valid for structures in logic \<LL>
+N.B. a different style of definition from BBI. We try to investigate the best way to define a logic 
+system. We do keep in mind the system has to be consistent.
+*)
+type_synonym valid = "Structure \<Rightarrow> Structure" ( "\<turnstile>")
 
 (* Need to define Antecedent and Consequent meaning using sign datatype*)
 datatype consecute = Antecedent Structure | Consequent Structure

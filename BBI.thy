@@ -35,11 +35,16 @@ datatype BBI_form =
 
 text \<open>Now we define axioms and rules for BBI-formula.
 inductive  keyword allows us to formalise a more readable proof system in Isabelle.
-This is a common techique to define a Hilbert's style proof system as "=> bool isnt necessarily 
+This is a common techique to define a Hilbert's style proof system as "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool"  isnt necessarily 
 a semantic meaning"
 In Isabelle, when defining an axioms, e.g.MP:  A -> B  ==> A  ==> B, it means that 
 Assume A implies B is true and A is true will prove B is true.
 Using this notation we can define a inductive proof system\<close>
+
+text \<open>Apart from inductive keyword, other keywords are considerated: type_synonym, axiomatization, definition
+However, those methods seems not to help us to define turnstile.
+A pre-defined structural proof system is in Isabelle which is using notepad, assumes, fix and proof keywords.
+But this does not help us to define local axioms.\<close>
 
 subsection "IL + CL Axioms"
 
@@ -61,12 +66,12 @@ ConjE2 : "F \<and>\<^sub>B H \<turnstile>\<^sub>c H" |
 DisjI1 : "F \<turnstile>\<^sub>c F \<and>\<^sub>B H" |
 DisjI2 : "H \<turnstile>\<^sub>c F \<and>\<^sub>B H"
 
-text \<open>In here, we define an extra symbole: double turnstile for future usage.
+text \<open>In here, we define an extra symbol: double turnstile as extra syntax.
 The definition is based on the inductive definition of turnstile
 \<close>
 
 definition double_turnstile_CL :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool" (infix "\<stileturn>\<turnstile>\<^sub>c" 55)
-  where "double_turnstile_CL F G \<equiv> (F \<turnstile>\<^sub>c G) \<and> (G \<turnstile>\<^sub>c F) "
+  where " F \<stileturn>\<turnstile>\<^sub>c G \<equiv> (F \<turnstile>\<^sub>c G) \<and> (G \<turnstile>\<^sub>c F) "
 
 subsection "LM axioms"
 
@@ -85,7 +90,7 @@ Comm : "(F *\<^sub>B G) \<turnstile>\<^sub>l (G *\<^sub>B F)"|
 ConjI : "F1  \<turnstile>\<^sub>l G1 \<Longrightarrow> F2  \<turnstile>\<^sub>l G2 \<Longrightarrow> (F1 *\<^sub>B F2) \<turnstile>\<^sub>l (G1 *\<^sub>B G2)"
 
 definition double_turnstile_LM :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool" (infix "\<stileturn>\<turnstile>\<^sub>l" 55)
-  where "double_turnstile_LM F G \<equiv> (F \<turnstile>\<^sub>l G) \<and> (G \<turnstile>\<^sub>l F)"
+  where " F \<stileturn>\<turnstile>\<^sub>l G \<equiv> (F \<turnstile>\<^sub>l G) \<and> (G \<turnstile>\<^sub>l F)"
 
 
 end
