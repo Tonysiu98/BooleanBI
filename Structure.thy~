@@ -18,12 +18,12 @@ text \<open> We define structures in terms of Antecedent and consequent. This is
 dataype definition. As BBI is CL + LM, our connectives are based on DL of CL & LM\<close>
 
 datatype Antecedent_Structure =
-formulaA BBI_form|
-AddNilA       ("\<emptyset>\<^sub>A") |
-SharpA Consequent_Structure    ("\<sharp>\<^sub>A _" 100)|
-SemiColonA   Antecedent_Structure Antecedent_Structure (infix ";\<^sub>A" 101)|
-MultNilA     ("\<oslash>")|
-CommaA Antecedent_Structure Antecedent_Structure (infix ",\<^sub>A" 101)
+formula BBI_form|
+AddNil       ("\<emptyset>") |
+Sharp Consequent_Structure    ("\<sharp> _" 100)|
+SemiColon   Antecedent_Structure Antecedent_Structure (infix ";" 101)|
+MultNil     ("\<oslash>")|
+Comma Antecedent_Structure Antecedent_Structure (infix "," 101)
 and
 Consequent_Structure = 
 formula BBI_form |
@@ -39,16 +39,16 @@ primrec
   \<psi> :: "Antecedent_Structure \<Rightarrow> BBI_form"  and 
   \<gamma> :: "Consequent_Structure \<Rightarrow> BBI_form"
   where
-"\<psi> (formulaA F)  = F"|
-"\<psi> AddNilA = \<top>\<^sub>B"|
-"\<psi> (SharpA X) =\<not>\<^sub>B \<gamma> X "|
-"\<psi> (SemiColonA X Y) = (\<psi> X) \<and>\<^sub>B (\<psi> Y)"|
-"\<psi> MultNilA = \<top>\<^sup>*\<^sub>B "|
-"\<psi> (CommaA X Y) = (\<psi> X) *\<^sub>B (\<psi> Y) "|
+"\<psi> (formula F)  = F"|
+"\<psi> AddNil = \<top>\<^sub>B"|
+"\<psi> (Sharp X) =\<not>\<^sub>B \<gamma> X "|
+"\<psi> (SemiColon X X) = (\<psi> X) \<and>\<^sub>B (\<psi> X)"|
+"\<psi> MultNil = \<top>\<^sup>*\<^sub>B "|
+"\<psi> (Comma X Y) = (\<psi> X) *\<^sub>B (\<psi> Y) "|
 "\<gamma> (formula F) = F"|
-"\<gamma> AddNil = \<bottom>\<^sub>B "|
+"\<gamma> AddNill = \<bottom>\<^sub>B "|
 "\<gamma> (Sharp X) =  \<not>\<^sub>B \<psi> X"|
-"\<gamma> (SemiColon X Y) = \<gamma> X \<or>\<^sub>B \<gamma> Y"|
+"\<gamma> (SemiColon Y Y) = \<gamma> Y \<or>\<^sub>B \<gamma> Y"|
 "\<gamma> (DotArrow X Y) = \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y"
 
  
