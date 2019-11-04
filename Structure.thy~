@@ -33,8 +33,7 @@ SemiColon Consequent_Structure Consequent_Structure (infix ";" 101)|
 DotArrow Antecedent_Structure Consequent_Structure  (infix "\<comment>\<circ>" 101)
 
 text \<open> With basic definition of Antecedent Structure and Consequent Structure, we now define 
-formula meaning in Structures. If we using the same datatype pattern for Antecedent and Consequent,
-there will be a clash of type in Isabelle\<close>
+formula meaning in Structures\<close>
 
 primrec 
   \<psi> :: "Antecedent_Structure \<Rightarrow> BBI_form"  and 
@@ -52,7 +51,5 @@ primrec
 "\<gamma> (SemiColon X Y) = \<gamma> X \<or>\<^sub>B \<gamma> Y"|
 "\<gamma> (DotArrow X Y) = \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y"
 
-definition Valid :: "Antecedent_Structure \<Rightarrow> Consequent_Structure \<Rightarrow> bool" (infix "\<turnstile>" 100)
-  where "X \<turnstile> Y \<equiv> \<psi> X \<turnstile>\<^sub>B \<gamma> Y "
-
+ 
 end
