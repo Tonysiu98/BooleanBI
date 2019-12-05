@@ -76,4 +76,27 @@ Antecedent Structure, we cannot use Y again in Consequent Structure due to clash
 
 (* 6 Weeks of development
 Untill now, we have come up a lot of infix symbol, we need to consider their precedence*)
+
+(*UNION TYPE + https://lists.cam.ac.uk/pipermail/cl-isabelle-users/2011-July/msg00116.html*)
+
+inductive ev :: "nat \<Rightarrow> bool" where
+ev0 : "ev 0"|
+evSS: "ev n \<Longrightarrow> ev(Suc(Suc n))"
+
+
+fun evn :: "nat \<Rightarrow> bool" where
+"evn 0 = True"|
+"evn (Suc 0) = False"|
+"evn (Suc(Suc n)) =  evn n"
+
+lemma "ev n \<Longrightarrow> evn n"
+proof(induction rule: ev.induct)
+  case ev0 
+  show ?case by simp
+next
+  case evSS
+  thus ?case by simp
+qed
+
+
 end
