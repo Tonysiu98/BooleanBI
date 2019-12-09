@@ -98,5 +98,39 @@ next
   thus ?case by simp
 qed
 
+lemma de_Morgan:
+  assumes "\<not>(\<forall>x. P x)"
+  shows "\<exists>x.\<not>P x"
+proof (rule classical)
+  assume "\<nexists>x.\<not>P x"
+  have "\<forall>x. P x"
+  proof
+    fix x show "P x"
+    proof (rule classical)
+    assume "\<not> P x"
+    then have "\<exists>x.\<not>P x" ..
+    with \<open>\<nexists>x.\<not>P x\<close> show ?thesis by contradiction
+    qed
+  qed
+  with \<open>\<not>(\<forall>x. P x)\<close> show ?thesis 
+    by blast
+qed
 
+theorem Drinker's_Principle: "\<exists>x. drunk x --> (\<forall>x. drunk x)"
+proof cases
+  fix a assume "\<forall>x. drunk x"
+  then have "drunk a --> (\<forall>x. drunk x)" ..
+  then show ?thesis ..
+next
+  assume "\<not> (\<forall>x. drunk x)"
+  then have "\<exists>x. \<not> drunk x" by (rule de_Morgan)
+  then obtain a where a: "\<not> drunk a" ..
+  have "drunk a --> (\<forall>x. drunk x)"
+  proof
+    assume "drunk a"
+    with a show "\<forall>x. drunk x" by contradiction
+  qed
+  then show ?thesis ..
+qed
+  
 end
