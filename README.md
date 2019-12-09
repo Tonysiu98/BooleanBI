@@ -22,5 +22,5 @@ Section "Axioms and Rules" BBI.thy
 
 In this section, we are using Isabelle auto prover and blast rule to prove both CL & LM 's axioms and rules. Since we have transform our BBI_form to a Boolean type, we can apple HOL rules to all the lemmas. Isabelle/HOL imports Isabelle/FOL which defines First order logic axioms and rules. FOL is based on Classical logic. Hence, the rules are helpful for our theorem prover.
 
-### BBI-formula provables
-Section ?
+### Structures
+
