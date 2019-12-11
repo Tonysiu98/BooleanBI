@@ -132,5 +132,63 @@ next
   qed
   then show ?thesis ..
 qed
-  
+
+(* Testing purpose *)
+datatype testA = Q | sharp testB ("#")
+and 
+testB = R | percent testA ("%")
+
+type_synonym testAB = "testA + testB"
+
+fun sharps:: "testAB \<Rightarrow> bool" where
+"sharps (Inr R) = True"|
+"sharps (Inl (#x)) = False"
+
+inductive \<F> :: "testAB \<Rightarrow> testAB \<Rightarrow> bool" where
+"\<F> x x"|
+"\<F> a y \<Longrightarrow> \<F> (Inl (sharp x)) y"|
+"\<F> x y \<Longrightarrow> \<F> (Inl (sharp x)) y"
+
+subsection\<open>Mutually Inductive Definitions\<close>
+
+text\<open>
+Just as there are datatypes defined by mutual recursion, there are sets defined
+by mutual induction. As a trivial example we consider the even and odd
+natural numbers:
+\<close>
+
+inductive_set
+  Even :: "nat set" and
+  Odd  :: "nat set"
+where
+  zero:  "0 \<in> Even"
+| EvenI: "n \<in> Odd \<Longrightarrow> Suc n \<in> Even"
+| OddI:  "n \<in> Even \<Longrightarrow> Suc n \<in> Odd"
+
+text\<open>\noindent
+The mutually inductive definition of multiple sets is no different from
+that of a single set, except for induction: just as for mutually recursive
+datatypes, induction needs to involve all the simultaneously defined sets. In
+the above case, the induction rule is called @{thm[source]Even_Odd.induct}
+(simply concatenate the names of the sets involved) and has the conclusion
+@{text[display]"(?x \<in> Even \<longrightarrow> ?P ?x) \<and> (?y \<in> Odd \<longrightarrow> ?Q ?y)"}
+If we want to prove that all even numbers are divisible by two, we have to
+generalize the statement as follows:
+\<close>
+
+lemma "(m \<in> Even \<longrightarrow> 2 dvd m) \<and> (n \<in> Odd \<longrightarrow> 2 dvd (Suc n))"
+
+apply(rule Even_Odd.induct)
+
+(*<*)
+  apply simp
+ apply simp
+apply(simp add: dvd_def)
+apply(clarify)
+apply(rule_tac x = "Suc k" in exI)
+apply simp
+done
+(*>*)
+
+
 end

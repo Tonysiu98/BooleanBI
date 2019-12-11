@@ -48,6 +48,7 @@ section "BBI formula Axioms"
 (* Initial attempt of turnstile, this includes both CL and LM*)
 inductive turnstile_BBI :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool" (infix "\<turnstile>\<^sub>B" 55)
   where 
+Id : "Atom atom \<turnstile>\<^sub>B Atom atom"|
 Ax : "F \<turnstile>\<^sub>B F"|
 Top : "F \<turnstile>\<^sub>B \<top>\<^sub>B"|
 Bot : "\<bottom>\<^sub>B \<turnstile>\<^sub>B F"|
@@ -78,9 +79,6 @@ definition double_turnstile_CL :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow>
 
 text \<open> We imported BBI formula definition in this thy file. And now we will be defining 
 Structure connectives and rules (A higher hierarchy abstract) for our display calculus\<close>
-
-(* Substructure occureences in a structure X are classified as either positive or negative*)
-datatype sign = positive | negative
 
 section "Structure Definition"
 
@@ -199,7 +197,55 @@ impMultR: "\<P> (X ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula G) \<Longri
 nilMultL: "\<P> (\<oslash> ,\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C Y)" |
 nilMultL_sym: "\<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (\<oslash> ,\<^sub>A X \<turnstile>\<^sub>C Y)"|
 MAL: "\<P> (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z)"|
-MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z)" 
+MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z)"|
+(*Cut-elimination*)
+cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"
+
+
+section"Soundness and Completeness"
+lemma Soundness : 
+  assumes "\<P> (X \<turnstile>\<^sub>C Y)"
+  shows "Valid (X \<turnstile>\<^sub>C Y)"
+proof (induct X)
+  case (formulaA x)
+  then show ?case
+  proof (induct x)
+case Truth
+then show ?case 
+  using ConjE2 DisjI1 MP Valid.simps by blast
+next
+case Falsity
+then show ?case
+  by (simp add: Bot)
+next
+case Mfalsity
+then show ?case
+  using ConjE2 DisjI1 MP Valid.simps by blast
+next
+case (Atom x)
+then show ?case sledgehammer
+  using ConjE1 DisjI2 MP Valid.simps by blast
+next
+case (Neg x)
+then show ?case sorry
+next
+  case (Con x1 x2)
+  then show ?case sorry
+next
+  case (MCon x1 x2)
+  then show ?case sorry
+next
+  case (Dis x1 x2)
+  then show ?case sorry
+next
+  case (Imp x1 x2)
+  then show ?case sorry
+next
+  case (Mimp x1 x2)
+  then show ?case sorry
+qed
+
+
 
 section "display proof"
 type_synonym Structure = "Antecedent_Structure + Consequent_Structure"
@@ -228,12 +274,95 @@ fun ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
 
 
-
 fun con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "con_part Z (X \<turnstile>\<^sub>C Y) = ((neg Z (Inl X)) \<or> (pos Z (Inr Y)))"
 
-lemma display : "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow>  \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))"
-  apply (rule pos.cases)
-  sorry
+
+lemma display :
+  assumes "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y)"
+  shows "(\<exists>W. ((X  \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))"
+proof -
+  from assms have "((pos (Inl Z) (Inl X)) \<or> (neg (Inl Z) (Inr Y)))" by simp
+  have "(pos (Inl Z) (Inl X)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))" 
+  proof (induct X)
+case (formulaA x)
+then show ?case sorry
+next
+case AddNilA
+then show ?case sorry
+next
+case (SharpA x)
+then show ?case sorry
+next
+case (SemiColonA X1 X2)
+then show ?case sorry
+next
+case MultNilA
+then show ?case sorry
+next
+case (CommaA X1 X2)
+  then show ?case sorry
+next
+  case (formula x)
+  then show ?thesis sorry
+next
+  case AddNil
+  then show ?thesis sorry
+next
+  case (Sharp X)
+  then show ?thesis sorry
+next
+
+qed
+next 
+  have "(neg (Inl Z) (Inr Y)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))" 
+  proof (induct Y)
+case (formulaA x)
+then show ?thesis sorry
+next
+case AddNilA
+  then show ?thesis sorry
+next
+case (SharpA Y)
+then show ?thesis sorry
+next
+case (SemiColonA x1 x2)
+then show ?thesis sorry
+next
+case MultNilA
+then show ?thesis sorry
+next
+  case (CommaA x1 x2)
+then show ?thesis sorry
+next
+  case (formula x)
+  then show ?case sorry
+next
+  case AddNil
+  then show ?case sorry
+next
+  case (Sharp x)
+  then show ?case sorry
+next
+  case (SemiColon Y1 Y2)
+  then show ?case sorry
+next
+  case (DotArrow x1 Y)
+  then show ?case sorry
+qed
+    
+    
+
+    
+  qed
+
+   
+
+
+
+
+
+   
+  
 
 end
