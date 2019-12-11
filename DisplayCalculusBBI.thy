@@ -206,44 +206,29 @@ section"Soundness and Completeness"
 lemma Soundness : 
   assumes "\<P> (X \<turnstile>\<^sub>C Y)"
   shows "Valid (X \<turnstile>\<^sub>C Y)"
-proof (induct X)
-  case (formulaA x)
-  then show ?case
-  proof (induct x)
-case Truth
-then show ?case 
-  using ConjE2 DisjI1 MP Valid.simps by blast
+proof (rule rules.induct)
+  assume "X = formulaA x" 
+  have "\<P> (formulaA x \<turnstile>\<^sub>C Y)"  
+    using \<open>X = formulaA x\<close> assms by auto
+  then have "Valid (formulaA x \<turnstile>\<^sub>C Y)" apply simp 
+    using ConjE1 DisjI2 MP by blast
+next 
+  assume "Y = \<emptyset>"
+  have "\<P>(X \<turnstile>\<^sub>C \<emptyset>)" 
+    using \<open>Y = \<emptyset>\<close> assms by auto
+  then have "Valid (X \<turnstile>\<^sub>C \<emptyset>)" apply simp 
+    using ConjE1 DisjI2 MP by blast
 next
-case Falsity
-then show ?case
-  by (simp add: Bot)
-next
-case Mfalsity
-then show ?case
-  using ConjE2 DisjI1 MP Valid.simps by blast
-next
-case (Atom x)
-then show ?case sledgehammer
-  using ConjE1 DisjI2 MP Valid.simps by blast
-next
-case (Neg x)
-then show ?case sorry
-next
-  case (Con x1 x2)
-  then show ?case sorry
-next
-  case (MCon x1 x2)
-  then show ?case sorry
-next
-  case (Dis x1 x2)
-  then show ?case sorry
-next
-  case (Imp x1 x2)
-  then show ?case sorry
-next
-  case (Mimp x1 x2)
-  then show ?case sorry
-qed
+  assume "X = \<sharp>\<^sub>AX'"
+  have "\<P> (\<sharp>\<^sub>AX' \<turnstile>\<^sub>C Y)" 
+    using \<open>X = \<sharp>\<^sub>A X'\<close> assms by auto
+  then have "Valid (\<sharp>\<^sub>AX' \<turnstile>\<^sub>C Y)" apply simp 
+    using ConjE2 DisjI1 MP by blast
+(*Questionable usage of ConjE1 DisjI2 MP*)
+  
+                      
+
+                      
 
 
 
@@ -284,76 +269,49 @@ lemma display :
 proof -
   from assms have "((pos (Inl Z) (Inl X)) \<or> (neg (Inl Z) (Inr Y)))" by simp
   have "(pos (Inl Z) (Inl X)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))" 
-  proof (induct X)
-case (formulaA x)
-then show ?case sorry
-next
-case AddNilA
-then show ?case sorry
-next
-case (SharpA x)
-then show ?case sorry
-next
-case (SemiColonA X1 X2)
-then show ?case sorry
-next
-case MultNilA
-then show ?case sorry
-next
-case (CommaA X1 X2)
-  then show ?case sorry
-next
-  case (formula x)
+  proof (cases X)
+case (formulaA x1) 
   then show ?thesis sorry
 next
-  case AddNil
+  case AddNilA
   then show ?thesis sorry
 next
-  case (Sharp X)
+  case (SharpA x3)
   then show ?thesis sorry
+next
+  case (SemiColonA x41 x42)
+  then show ?thesis sorry
+next
+  case MultNilA
+  then show ?thesis sorry
+next
+  case (CommaA x61 x62)
+  then show ?thesis sorry
+qed
+
 next
 
-qed
 next 
   have "(neg (Inl Z) (Inr Y)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))" 
-  proof (induct Y)
-case (formulaA x)
+  proof (cases Y)
+case (formula x1)
 then show ?thesis sorry
 next
-case AddNilA
+case AddNil
   then show ?thesis sorry
 next
-case (SharpA Y)
+case (Sharp x3)
 then show ?thesis sorry
 next
-case (SemiColonA x1 x2)
+case (SemiColon x41 x42)
 then show ?thesis sorry
 next
-case MultNilA
-then show ?thesis sorry
-next
-  case (CommaA x1 x2)
-then show ?thesis sorry
-next
-  case (formula x)
-  then show ?case sorry
-next
-  case AddNil
-  then show ?case sorry
-next
-  case (Sharp x)
-  then show ?case sorry
-next
-  case (SemiColon Y1 Y2)
-  then show ?case sorry
-next
-  case (DotArrow x1 Y)
-  then show ?case sorry
+  case (DotArrow x51 x52)
+  then show ?thesis sorry
 qed
-    
-    
-
-    
+next 
+  have "((pos (Inl Z) (Inl X)) \<or> (neg (Inl Z) (Inr Y))) \<Longrightarrow>  \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W) " sorry
+  then show ?thesis sorry
   qed
 
    
