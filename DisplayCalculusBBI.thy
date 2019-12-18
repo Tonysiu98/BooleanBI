@@ -201,31 +201,30 @@ MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrighta
 (*Cut-elimination*)
 cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"
 
+lemma test : "\<lbrakk>\<P> (X  \<turnstile>\<^sub>C (formula \<bottom>\<^sub>B)) ; \<P> ((formulaA \<bottom>\<^sub>B) \<turnstile>\<^sub>C Y)\<rbrakk> \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C Y)"
+  sledgehammer
+  using cut by blast
 
 section"Soundness and Completeness"
 lemma Soundness : 
   assumes "\<P> (X \<turnstile>\<^sub>C Y)"
   shows "Valid (X \<turnstile>\<^sub>C Y)"
+
 proof (rule rules.induct)
-  assume "X = formulaA x" 
-  have "\<P> (formulaA x \<turnstile>\<^sub>C Y)"  
-    using \<open>X = formulaA x\<close> assms by auto
-  then have "Valid (formulaA x \<turnstile>\<^sub>C Y)" apply simp 
-    using ConjE1 DisjI2 MP by blast
-next 
-  assume "Y = \<emptyset>"
-  have "\<P>(X \<turnstile>\<^sub>C \<emptyset>)" 
-    using \<open>Y = \<emptyset>\<close> assms by auto
-  then have "Valid (X \<turnstile>\<^sub>C \<emptyset>)" apply simp 
-    using ConjE1 DisjI2 MP by blast
+  show "\<P> (X \<turnstile>\<^sub>C Y)" using assms by auto
 next
-  assume "X = \<sharp>\<^sub>AX'"
-  have "\<P> (\<sharp>\<^sub>AX' \<turnstile>\<^sub>C Y)" 
-    using \<open>X = \<sharp>\<^sub>A X'\<close> assms by auto
-  then have "Valid (\<sharp>\<^sub>AX' \<turnstile>\<^sub>C Y)" apply simp 
-    using ConjE2 DisjI1 MP by blast
-(*Questionable usage of ConjE1 DisjI2 MP*)
-  
+  show "\<And>X. Valid (formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C X)"
+    by (simp add: Bot)
+
+next 
+  show "\<And>X. \<P> (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula \<bottom>\<^sub>B)"
+    by simp
+next
+  show "\<And>X. \<P> (\<emptyset>\<^sub>A \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (\<emptyset>\<^sub>A \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA \<top>\<^sub>B \<turnstile>\<^sub>C X)" 
+    by simp
+next 
+  show "\<And>X. Valid (X \<turnstile>\<^sub>C formula \<top>\<^sub>B)" 
+    by (simp add: Top)
                       
 
                       

@@ -190,5 +190,19 @@ apply simp
 done
 (*>*)
 
+(*
+  assume "X = formulaA \<bottom>\<^sub>B" 
+  have "\<P> (formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C Y)" sledgehammer
+    by (simp add: BotL)
+  then have "Valid(formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C Y)" 
+    by (simp add: Bot)
+  then have "\<P> (formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid(formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C Y)" sledgehammer
+    by blast
+  then have "\<And>X. Valid (formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C X)" 
+    by (simp add: Bot)
+
+*)
+
+
 
 end
