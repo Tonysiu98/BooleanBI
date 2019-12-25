@@ -1,5 +1,5 @@
 theory Scratch 
-  imports Main
+  imports Main DisplayCalculusBBI
 begin
 text\<open>This Isabelle file is for logging purpose and practice\<close>
 
@@ -204,5 +204,37 @@ done
 *)
 
 
+lemma Soundness : 
+  assumes "\<P> (X \<turnstile>\<^sub>C Y)"
+  shows "Valid (X \<turnstile>\<^sub>C Y)"
 
+proof (rule Provable.induct)
+  show "\<P> (X \<turnstile>\<^sub>C Y)" using assms by auto
+next
+  show "\<And>X. Valid (formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C X)"
+    by (simp add: Bot)
+
+next 
+  show "\<And>X. \<P> (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula \<bottom>\<^sub>B)"
+    by simp
+next
+  show "\<And>X. \<P> (\<emptyset>\<^sub>A \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (\<emptyset>\<^sub>A \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA \<top>\<^sub>B \<turnstile>\<^sub>C X)" 
+    by simp
+next 
+  show "\<And>X. Valid (X \<turnstile>\<^sub>C formula \<top>\<^sub>B)" 
+    by (simp add: Top)
+next 
+  show "\<And>F X. \<P> (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C X) \<Longrightarrow>
+           Valid (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA (\<not>\<^sub>B F) \<turnstile>\<^sub>C X)"
+    by simp
+next 
+  show "\<And>X F. \<P> (X \<turnstile>\<^sub>C \<sharp> (formulaA F)) \<Longrightarrow>
+           Valid (X \<turnstile>\<^sub>C \<sharp> (formulaA F)) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula (\<not>\<^sub>B F))"
+    by auto
+next 
+  show "\<And>F X G.
+       \<P> (formulaA F \<turnstile>\<^sub>C X) \<Longrightarrow>
+       Valid (formulaA F \<turnstile>\<^sub>C X) \<Longrightarrow>
+       \<P> (formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA (F \<or>\<^sub>B G) \<turnstile>\<^sub>C X)"
+    by (simp add: DisjE)
 end
