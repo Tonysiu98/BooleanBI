@@ -236,5 +236,6 @@ next
        \<P> (formulaA F \<turnstile>\<^sub>C X) \<Longrightarrow>
        Valid (formulaA F \<turnstile>\<^sub>C X) \<Longrightarrow>
        \<P> (formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA (F \<or>\<^sub>B G) \<turnstile>\<^sub>C X)"
-    by (simp add: DisjE)
+    sledgehammer [isar_proofs]
+    using Soundness orL by blast
 end
