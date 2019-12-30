@@ -202,6 +202,7 @@ MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrighta
 cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"
 
 
+
 section"Soundness and Completeness"
 theorem Soundness : 
   assumes "\<P> (X \<turnstile>\<^sub>C Y)"
@@ -332,6 +333,9 @@ qed
 
 section "display proof"
 
+axiomatization where
+equiv : "(\<P> C' \<Longrightarrow> \<P> C) \<Longrightarrow> (C' \<equiv>\<^sub>D C)"
+
 type_synonym Structure = "Antecedent_Structure + Consequent_Structure"
 
 inductive pos :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
@@ -355,6 +359,7 @@ where
 "pos Z (Inr X2) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"
 
 
+
 fun ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
 
@@ -366,14 +371,53 @@ fun con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 
 lemma display :
   assumes "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y)"
-  shows "(\<exists>W. ((X  \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))"
+  shows "(\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
 proof -
   from assms have "((pos (Inl Z) (Inl X)) \<or> (neg (Inl Z) (Inr Y)))" by simp
   have "(pos (Inl Z) (Inl X)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))" 
   proof (rule displayEquiv.induct)
                defer
     show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa \<turnstile>\<^sub>C \<sharp> Y ; Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)" 
-
+      by (meson display_symm equiv)
+  next
+    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Y ;\<^sub>A Xa \<turnstile>\<^sub>C Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      using display_symm equiv by blast
+  next
+    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa ;\<^sub>A \<sharp>\<^sub>A Y \<turnstile>\<^sub>C Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      using display_symm equiv by blast
+  next
+    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa \<turnstile>\<^sub>C Za ; Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      using display_symm equiv by blast
+  next
+    show "\<And>Xa Y. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C \<sharp> Xa) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      using display_symm equiv by blast
+  next 
+    show "\<And>Y Xa. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (\<sharp>\<^sub>A (\<sharp> Xa) \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      using display_symm equiv by blast
+  next
+    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      using display_symm equiv by blast
+  next
+    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Y ,\<^sub>A Xa \<turnstile>\<^sub>C Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)" 
+      using display_symm equiv by blast
+  next
+    show "\<And>C. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. C \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      using display_symm equiv by blast
+  next 
+    show "\<And>C C'. pos (Inl Z) (Inl X) \<Longrightarrow> C \<equiv>\<^sub>D C' \<Longrightarrow> \<exists>W. C' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W) \<Longrightarrow> \<exists>W. C \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)" 
+      using display_trans by blast
+  next 
+    show "\<And>C C' C''. pos (Inl Z) (Inl X) \<Longrightarrow> C \<equiv>\<^sub>D C' \<Longrightarrow> \<exists>W. C' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W) \<Longrightarrow> C' \<equiv>\<^sub>D C'' \<Longrightarrow> \<exists>W. C'' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W) \<Longrightarrow> \<exists>W. C'' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+      by blast
+  next 
+    fix x
+    show " pos (Inl Z) (Inl X) \<Longrightarrow> x \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y)"
+      using display_symm equiv by blast
+  qed
+  show ?thesis 
+    by (meson display_symm equiv)
+qed
+  
 
 
 
