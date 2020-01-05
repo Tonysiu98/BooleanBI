@@ -2,21 +2,9 @@ theory DisplayCalculusBBI
   imports Main
 begin
 
-
-text \<open> In this theory, we are defining syntax for Boolean BI formula and its rules and axioms.
-The logic system is syntax and without any semantic at this level\<close>
-
 section "BBI formula definiton"
 
-text \<open>Initially, we define a variable which is indexed by natural number. 
-In this way we can genereate/assuming  inifinte atomic proposition varaiables\<close>
-
 datatype atom = P nat
-
-text \<open>BBI is CL + IL. In our definition we include both syntax in the definition.
-With inifinte proposition variables we can now define a BBI formula datatype.
-It is a recursive definition which includes symbols (both prefix and infix).
-The natural number next to the symbol indicate its precedence Isabell recommended range is >= 100\<close>
 
 datatype BBI_form = 
   Truth                     ("\<top>\<^sub>B")
@@ -29,19 +17,6 @@ datatype BBI_form =
   | Dis BBI_form BBI_form   (infix "\<or>\<^sub>B" 101)
   | Imp  BBI_form BBI_form  (infix "\<rightarrow>\<^sub>B" 101)
   | Mimp  BBI_form BBI_form (infix "\<rightarrow>\<^emph>\<^sub>B" 101)
-
-text \<open>Now we define axioms and rules for BBI-formula.
-"inductive" keyword allows us to formalise a more readable proof system in Isabelle.
-This is a common techique to define a Hilbert's style proof system as "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool"
-isnt necessarily a semantic meaning"
-In Isabelle, when defining an axioms, e.g.MP:  A -> B  ==> A  ==> B, it means that 
-Assume A implies B is true and A is true will prove B is true.
-Using this notation we can define a inductive proof system\<close>
-
-text \<open>Apart from inductive keyword, other keywords are considerated: type_synonym, axiomatization, definition.
-However, those methods seems not to help us to define the turnstile.
-A pre-defined structural proof system is in Isabelle which is using notepad, assumes, fix and proof keywords.
-But this does not help us to define local axioms.\<close>
 
 section "BBI formula Axioms"
 
@@ -71,19 +46,10 @@ Assocr: "(F *\<^sub>B G) *\<^sub>B H \<turnstile>\<^sub>B F *\<^sub>B (G *\<^sub
 Comm : "(F *\<^sub>B G) \<turnstile>\<^sub>B (G *\<^sub>B F)"|
 ConjIstar : "F1  \<turnstile>\<^sub>B G1 \<Longrightarrow> F2  \<turnstile>\<^sub>B G2 \<Longrightarrow> (F1 *\<^sub>B F2) \<turnstile>\<^sub>B (G1 *\<^sub>B G2)"
 
-text \<open>In here, we define an extra symbol: double turnstile as extra syntax.
-The definition is based on the inductive definition of turnstile\<close>
-
 definition double_turnstile_CL :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool" (infix "\<stileturn>\<turnstile>\<^sub>B" 55)
   where " F \<stileturn>\<turnstile>\<^sub>B G \<equiv> (F \<turnstile>\<^sub>B G) \<and> (G \<turnstile>\<^sub>B F) "
 
-text \<open> We imported BBI formula definition in this thy file. And now we will be defining 
-Structure connectives and rules (A higher hierarchy abstract) for our display calculus\<close>
-
 section "Structure Definition"
-
-text \<open> We define structures in terms of Antecedent and consequent. This is done through mutual 
-recursion dataype definition. As BBI is CL + LM, our connectives are based on DL of CL & LM.\<close>
 
 datatype Antecedent_Structure =
 formulaA BBI_form|
@@ -99,10 +65,6 @@ AddNil       ("\<emptyset>")|
 Sharp Antecedent_Structure  ("\<sharp>")|
 SemiColon Consequent_Structure Consequent_Structure (infix ";" 101)|
 DotArrow Antecedent_Structure Consequent_Structure  (infix "\<rightarrow>\<circ>" 101)
-
-text \<open> With basic definition of Antecedent Structure and Consequent Structure, we now define 
-formula meaning in Structures. If we using the same datatype pattern for Antecedent and Consequent,
-there will be a clash of type in Isabelle\<close>
 
 primrec 
   \<psi> :: "Antecedent_Structure \<Rightarrow> BBI_form"  and 
@@ -120,22 +82,13 @@ primrec
 "\<gamma> (SemiColon X Y) = \<gamma> X \<or>\<^sub>B \<gamma> Y"|
 "\<gamma> (DotArrow X Y) = \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y"
 
-text \<open>With above Structure definitions, we can now define Consecution which is a datatype that 
-takes a pair of Antecedent and Consequent Structures in the syntax of X \<turnstile> Y\<close>
-
 datatype Consecution = Consecution Antecedent_Structure Consequent_Structure (infix "\<turnstile>\<^sub>C" 50)
-
-text \<open>We define the meaning of a valid Consecution is. X \<turnstile> Y is said to be valid iff  \<psi> X  \<turnstile> \<gamma> Y in logic \<L> \<close>
 
 (* using fun which is introduced in HOL, we can use pattern matching for defining valid*)
 fun Valid :: "Consecution \<Rightarrow> bool" where
 "Valid (Consecution X Y) =  \<psi> X  \<turnstile>\<^sub>B \<gamma> Y"
 
 section "Display Calculus"
-
-text \<open>Now we define a display calculius of BBI. We use an inductive definition to define Displaying.
-i.e. Display equivalence. Our intro rules are Display Positulates for CL + LM. We also define this 
-definition to be reflexive and transistive with symmetric Display Positulates.\<close> 
 
 inductive displayEquiv :: "Consecution \<Rightarrow> Consecution \<Rightarrow> bool " (infix "\<equiv>\<^sub>D" 100) where
 (*(X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) <>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z) <>\<^sub>D (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)*)
@@ -154,10 +107,6 @@ positulatesCL8 [intro]:"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z ) \<equ
 display_refl  [simp]:"C \<equiv>\<^sub>D C"|
 display_symm  [simp]:"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C"|
 display_trans [simp]:"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C'' \<Longrightarrow> C \<equiv>\<^sub>D C''"
-
-text \<open> We then define logical and Structural rules for our display calculus. We use the symbol \<P>
-to show that the consecution is provable. 
-Again we use an inductive definition for proving our future theorem\<close>
 
 inductive Provable :: "Consecution \<Rightarrow>bool" ("\<P>") where
 (*Logical Rules For DL_CL*)
@@ -201,137 +150,172 @@ MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrighta
 (*Cut-elimination*)
 cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"
 
-
-
 section"Soundness and Completeness"
-theorem Soundness : 
-  assumes "\<P> (X \<turnstile>\<^sub>C Y)"
-  shows "Valid (X \<turnstile>\<^sub>C Y)"
-proof (rule Provable.induct)
-
-  show "\<P> (X \<turnstile>\<^sub>C Y)" using assms by auto
+(*
+theorem Soundness: "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid(X \<turnstile>\<^sub>C Y)"
+proof (induction rule:Provable.induct)
+case (BotL X)
+then show ?case 
+  by (simp add: Bot)
 next
-  show "\<And>X. Valid (formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C X)"
-    by (simp add: Bot)
-next 
-  show "\<And>X. \<P> (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula \<bottom>\<^sub>B)"
-    by simp
+  case (BotR X)
+then show ?case 
+  by simp
 next
-  show "\<And>X. \<P> (\<emptyset>\<^sub>A \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (\<emptyset>\<^sub>A \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA \<top>\<^sub>B \<turnstile>\<^sub>C X)" 
-    by simp
-next 
-  show "\<And>X. Valid (X \<turnstile>\<^sub>C formula \<top>\<^sub>B)" 
+  case (TopL X)
+then show ?case 
+  by simp
+next
+case (TopR X)
+  then show ?case 
     by (simp add: Top)
-next 
-  show "\<And>F X. \<P> (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C X) \<Longrightarrow>
-           Valid (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA (\<not>\<^sub>B F) \<turnstile>\<^sub>C X)"
+next
+  case (notL F X)
+  then show ?case
     by simp
-next 
-  show "\<And>X F. \<P> (X \<turnstile>\<^sub>C \<sharp> (formulaA F)) \<Longrightarrow>
-           Valid (X \<turnstile>\<^sub>C \<sharp> (formulaA F)) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula (\<not>\<^sub>B F))"
-    by auto
-next 
-  show "\<And>F X G.
-       \<P> (formulaA F \<turnstile>\<^sub>C X) \<Longrightarrow>
-       Valid (formulaA F \<turnstile>\<^sub>C X) \<Longrightarrow>
-       \<P> (formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA (F \<or>\<^sub>B G) \<turnstile>\<^sub>C X)"
+next
+  case (notR X F)
+  then show ?case 
+    by simp
+next
+  case (orL F X G)
+  then show ?case 
     by (simp add: DisjE)
-next 
-  show "\<And>X F G. \<P> (X \<turnstile>\<^sub>C formula F ; formula G) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula F ; formula G) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula (F \<or>\<^sub>B G))"
+next
+  case (orR X F G)
+  then show ?case 
     by simp
-next 
-  show "\<And>F G X. \<P> (formulaA F ;\<^sub>A formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA F ;\<^sub>A formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA (F \<and>\<^sub>B G) \<turnstile>\<^sub>C X)"
+next
+  case (andL F G X)
+  then show ?case 
     by simp
-next 
-  show "\<And>X F G.
-       \<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow>
-       Valid (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula (F \<and>\<^sub>B G))" 
+next
+  case (andR X F G)
+  then show ?case 
     by (simp add: ConjI)
 next
-  show "\<And>X F G Y.
-       \<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow>
-       Valid (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (formulaA G \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (formulaA G \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (formulaA (F \<rightarrow>\<^sub>B G) \<turnstile>\<^sub>C \<sharp> X ; Y)"
+  case (impL X F G Y)
+  then show ?case 
     using ConjE2 DisjI1 MP Valid.simps by blast
 next
-  show "\<And>X F G. \<P> (X ;\<^sub>A formulaA F \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (X ;\<^sub>A formulaA F \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula (F \<rightarrow>\<^sub>B G))"
+  case (impR X F G)
+  then show ?case 
     by (simp add: Imp)
-next 
-  show "\<And>X Y. \<P> (\<emptyset>\<^sub>A ;\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<emptyset>\<^sub>A ;\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)" 
-    using ConjE2 DisjI1 MP Valid.simps by blast
-next 
-  show "\<And>X Y. \<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<emptyset>\<^sub>A ;\<^sub>A X \<turnstile>\<^sub>C Y)"
+next
+  case (nilL X Y)
+  then show ?case 
     using ConjE2 DisjI1 MP Valid.simps by blast
 next
-  show "\<And>X Y. \<P> (X \<turnstile>\<^sub>C Y ; \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y ; \<emptyset>) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)"
+  case (nilL_sym X Y)
+  then show ?case 
     using ConjE1 DisjI2 MP Valid.simps by blast
 next
-  show "\<And>X Y. \<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y ; \<emptyset>)"
-    using ConjE2 DisjI1 MP Valid.simps by blast
-next 
-  show "\<And>W X Y Z. \<P> (W ;\<^sub>A (X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (W ;\<^sub>A (X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid ((W ;\<^sub>A X) ;\<^sub>A Y \<turnstile>\<^sub>C Z)"
+case (nilR X Y)
+  then show ?case 
     using ConjE1 DisjI2 MP Valid.simps by blast
 next
-  show "\<And>W X Y Z. \<P> ((W ;\<^sub>A X) ;\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid ((W ;\<^sub>A X) ;\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (W ;\<^sub>A (X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)"
+  case (nilR_sym X Y)
+  then show ?case 
     using ConjE2 DisjI1 MP Valid.simps by blast
-next 
-  show "\<And>W X Y Z. \<P> (W \<turnstile>\<^sub>C (X ; Y) ; Z) \<Longrightarrow> Valid (W \<turnstile>\<^sub>C (X ; Y) ; Z) \<Longrightarrow> Valid (W \<turnstile>\<^sub>C X ; (Y ; Z))"
+next
+  case (AAL W X Y Z)
+  then show ?case 
     using ConjE1 DisjI2 MP Valid.simps by blast
 next
-  show "\<And>W X Y Z. \<P> (W \<turnstile>\<^sub>C X ; (Y ; Z)) \<Longrightarrow> Valid (W \<turnstile>\<^sub>C X ; (Y ; Z)) \<Longrightarrow> Valid (W \<turnstile>\<^sub>C (X ; Y) ; Z)"
+  case (AAL_sym W X Y Z)
+  then show ?case 
+    using ConjE2 DisjI1 MP Valid.simps by blast
+next
+  case (AAR W X Y Z)
+  then show ?case 
     using ConjE1 DisjI2 MP Valid.simps by blast
 next
-  show "\<And>X Z Y. \<P> (X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X ;\<^sub>A Y \<turnstile>\<^sub>C Z)"
+  case (AAR_sym W X Y Z)
+  then show ?case 
     using ConjE2 DisjI1 MP Valid.simps by blast
 next
-  show "\<And>X Z Y. \<P> (X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y ; Z)"
+  case (WkL X Z Y)
+  then show ?case 
+    using ConjE1 DisjI2 MP Valid.simps by blast
+next
+  case (WkR X Z Y)
+  then show ?case 
+    using ConjE1 DisjI2 MP Valid.simps by blast
+next
+  case (CtrL X Y)
+  then show ?case 
     using ConjE2 DisjI1 MP Valid.simps by blast
 next
-  show "\<And>X Y. \<P> (X ;\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X ;\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)"
+  case (CtrR X Y)
+  then show ?case 
     using ConjE2 DisjI1 MP Valid.simps by blast
 next
-  show "\<And>X Y. \<P> (X \<turnstile>\<^sub>C Y ; Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y ; Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)"
-    using ConjE2 DisjI1 MP Valid.simps by blast
-next
-  show "\<And>X. \<P> (\<oslash> \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (\<oslash> \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA \<top>\<^sup>*\<^sub>B \<turnstile>\<^sub>C X)"
+  case (TopMultL X)
+  then show ?case 
     by simp
 next
-  show "\<And>F G X. \<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C X) \<Longrightarrow> Valid (formulaA (F *\<^sub>B G) \<turnstile>\<^sub>C X)"
+  case (andMultL F G X)
+  then show ?case 
     by simp
 next
-  show "\<And>X F G Y.
-       \<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow>
-       Valid (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (formulaA G \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (formulaA G \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (formulaA (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>C X \<rightarrow>\<circ> Y)"
-    using ConjE2 DisjI1 MP Valid.simps by blast
-next 
-  show "Valid (\<oslash> \<turnstile>\<^sub>C formula \<top>\<^sup>*\<^sub>B)"
+  case (impMultL X F G Y)
+  then show ?case 
+    using ConjE1 DisjI2 MP Valid.simps by blast
+next
+  case TopMultR
+  then show ?case 
     by (simp add: Ax)
-next 
-  show "\<And>X F Y G.
-       \<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow>
-       Valid (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (Y \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (Y \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (X ,\<^sub>A Y \<turnstile>\<^sub>C formula (F *\<^sub>B G))"
-    by (simp add: ConjIstar)
 next
-  show "\<And>X F G. \<P> (X ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (X ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula G) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula (F \<rightarrow>\<^emph>\<^sub>B G))"
+  case (andMultR X F Y G)
+  then show ?case 
+    using ConjIstar by auto
+next
+  case (impMultR X F G)
+  then show ?case
     by (simp add: Impstar)
 next
-  show "\<And>X Y. \<P> (\<oslash> ,\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<oslash> ,\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)"
-    using ConjE1 DisjI2 MP Valid.simps by blast
-next 
-  show "\<And>X Y. \<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<oslash> ,\<^sub>A X \<turnstile>\<^sub>C Y)"
-    using ConjE1 DisjI2 MP Valid.simps by blast
-next 
-  show "\<And>W X Y Z. \<P> (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z)"
+case (nilMultL X Y)
+then show ?case 
+  using ConjE2 DisjI1 MP Valid.simps by blast
+next
+case (nilMultL_sym X Y)
+then show ?case 
+  using ConjE1 DisjI2 MP Valid.simps by blast
+next
+case (MAL W X Y Z)
+then show ?case 
+  using ConjE2 DisjI1 MP Valid.simps by blast
+next
+case (MAL_sym W X Y Z)
+then show ?case
+  using ConjE2 DisjI1 MP Valid.simps by blast
+next
+  case (cut X F Y)
+  then show ?case
     using ConjE2 DisjI1 MP Valid.simps by blast
-next
-  show "\<And>W X Y Z. \<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z)"
-    using ConjE1 DisjI2 MP Valid.simps by blast
-next
-  show "\<And>X F Y. \<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (formulaA F \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (formulaA F \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)"
-    using ConjE1 DisjI2 MP Valid.simps by blast
 qed
 
 
+
 section "display proof"
+
+*)
+theorem SoundTest:
+  assumes "C \<equiv>\<^sub>D C'" 
+  shows "Valid(C) \<Longrightarrow> Valid(C')"
+
+proof -
+  assume "C = ((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)" and "C' = (X \<turnstile>\<^sub>C \<sharp>Y ; Z)" 
+  have "Valid C"
+    by (meson ConjE1 DisjI2 MP Valid.elims(3))
+  then have "Valid C'" 
+    by (meson ConjE2 DisjI1 MP Valid.elims(3))
+  have "Valid(((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)) \<Longrightarrow> Valid((X \<turnstile>\<^sub>C \<sharp>Y ; Z))" sledgehammer
+    using \<open>C' = (X \<turnstile>\<^sub>C \<sharp> Y ; Z)\<close> \<open>Valid C'\<close> by blast
+  show "Valid(C) \<Longrightarrow> Valid(C')"
+  
+
+
 
 axiomatization where
 equiv : "(\<P> C' \<Longrightarrow> \<P> C) \<Longrightarrow> (C' \<equiv>\<^sub>D C)"
@@ -358,65 +342,68 @@ where
 "pos Z (Inl X1) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"|
 "pos Z (Inr X2) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"
 
-
-
 fun ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
 
-
 fun con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "con_part Z (X \<turnstile>\<^sub>C Y) = ((neg Z (Inl X)) \<or> (pos Z (Inr Y)))"
-
-
 
 lemma display :
   assumes "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y)"
   shows "(\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
 proof -
   from assms have "((pos (Inl Z) (Inl X)) \<or> (neg (Inl Z) (Inr Y)))" by simp
-  have "(pos (Inl Z) (Inl X)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))" 
-  proof (rule displayEquiv.induct)
-               defer
-    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa \<turnstile>\<^sub>C \<sharp> Y ; Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)" 
-      by (meson display_symm equiv)
-  next
-    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Y ;\<^sub>A Xa \<turnstile>\<^sub>C Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      using display_symm equiv by blast
-  next
-    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa ;\<^sub>A \<sharp>\<^sub>A Y \<turnstile>\<^sub>C Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      using display_symm equiv by blast
-  next
-    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa \<turnstile>\<^sub>C Za ; Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      using display_symm equiv by blast
-  next
-    show "\<And>Xa Y. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C \<sharp> Xa) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      using display_symm equiv by blast
-  next 
-    show "\<And>Y Xa. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (\<sharp>\<^sub>A (\<sharp> Xa) \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      using display_symm equiv by blast
-  next
-    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Xa \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      using display_symm equiv by blast
-  next
-    show "\<And>Xa Y Za. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (Y ,\<^sub>A Xa \<turnstile>\<^sub>C Za) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)" 
-      using display_symm equiv by blast
-  next
-    show "\<And>C. pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. C \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      using display_symm equiv by blast
-  next 
-    show "\<And>C C'. pos (Inl Z) (Inl X) \<Longrightarrow> C \<equiv>\<^sub>D C' \<Longrightarrow> \<exists>W. C' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W) \<Longrightarrow> \<exists>W. C \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)" 
-      using display_trans by blast
-  next 
-    show "\<And>C C' C''. pos (Inl Z) (Inl X) \<Longrightarrow> C \<equiv>\<^sub>D C' \<Longrightarrow> \<exists>W. C' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W) \<Longrightarrow> C' \<equiv>\<^sub>D C'' \<Longrightarrow> \<exists>W. C'' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W) \<Longrightarrow> \<exists>W. C'' \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
-      by blast
-  next 
-    fix x
-    show " pos (Inl Z) (Inl X) \<Longrightarrow> x \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y)"
-      using display_symm equiv by blast
-  qed
-  show ?thesis 
-    by (meson display_symm equiv)
+  have "(pos (Inl Z) (Inl X)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))"
+
+  proof (cases X )
+case (formulaA x1)
+then show ?thesis sledgehammer
+  using display_symm equiv by blast
+next
+case AddNilA
+then show ?thesis sledgehammer
+  using display_symm equiv by blast
+next
+case (SharpA x3)
+then show ?thesis sledgehammer
+  using display_symm equiv by blast
+next
+case (SemiColonA x41 x42)
+then show ?thesis 
+  using display_symm equiv by blast
+next
+  case MultNilA
+  then show ?thesis
+    using display_symm equiv by blast
+next
+  case (CommaA x61 x62)
+  then show ?thesis
+    using display_symm equiv by blast
 qed
+next 
+  have "(neg (Inl Z) (Inr Y)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))"
+  proof (cases Y )
+case (formula x1)
+then show ?thesis sledgehammer
+  using TopR equiv by blast
+next
+case AddNil
+then show ?thesis sorry
+next
+case (Sharp x3)
+then show ?thesis sorry
+next
+case (SemiColon x41 x42)
+then show ?thesis sorry
+next
+  case (DotArrow x51 x52)
+  then show ?thesis sorry
+qed
+  show ?thesis 
+    using display_symm equiv by blast
+qed
+  
+   
   
 
 
