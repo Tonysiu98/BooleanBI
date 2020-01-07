@@ -27,20 +27,22 @@ Id : "Atom atom \<turnstile>\<^sub>B Atom atom"|
 Ax : "F \<turnstile>\<^sub>B F"|
 Top : "F \<turnstile>\<^sub>B \<top>\<^sub>B"|
 Bot : "\<bottom>\<^sub>B \<turnstile>\<^sub>B F"|
-Imp : "F \<and>\<^sub>B G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B G \<rightarrow>\<^sub>B H"|
+ImpT : "F \<and>\<^sub>B G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B G \<rightarrow>\<^sub>B H"|
+ImpB : "F \<turnstile>\<^sub>B G \<rightarrow>\<^sub>B H \<Longrightarrow> F \<and>\<^sub>B G \<turnstile>\<^sub>B H"|
 MP : "F \<turnstile>\<^sub>B G \<Longrightarrow> G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B H"|
 Notl: "(\<not>\<^sub>B F) \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B \<bottom>\<^sub>B" |
 Notr: "F \<rightarrow>\<^sub>B \<bottom>\<^sub>B \<turnstile>\<^sub>B (\<not>\<^sub>B F)"|
 Notnot : "(\<not>\<^sub>B \<not>\<^sub>B F) \<turnstile>\<^sub>B F" |
 ConjI : "F \<turnstile>\<^sub>B G \<Longrightarrow> F \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B G \<and>\<^sub>B H" |
 DisjE : "F \<turnstile>\<^sub>B H \<Longrightarrow> G \<turnstile>\<^sub>B H \<Longrightarrow> F \<or>\<^sub>B G \<turnstile>\<^sub>B H"|
-ConjE1 : "F \<and>\<^sub>B H \<turnstile>\<^sub>B F"|
-ConjE2 : "F \<and>\<^sub>B H \<turnstile>\<^sub>B H" |
-DisjI1 : "F \<turnstile>\<^sub>B F \<and>\<^sub>B H" |
-DisjI2 : "H \<turnstile>\<^sub>B F \<and>\<^sub>B H"|
+ConjE1 : "G1 \<and>\<^sub>B G2 \<turnstile>\<^sub>B G1"|
+ConjE2 : "G1 \<and>\<^sub>B G2 \<turnstile>\<^sub>B G2" |
+DisjI1 : "G1 \<turnstile>\<^sub>B G1 \<or>\<^sub>B G2" |
+DisjI2 : "G2 \<turnstile>\<^sub>B G1 \<or>\<^sub>B G2"|
 Topl : "(F *\<^sub>B \<top>\<^sup>*\<^sub>B) \<turnstile>\<^sub>B F"|
 Topr : "F \<turnstile>\<^sub>B (F *\<^sub>B \<top>\<^sup>*\<^sub>B)"|
-Impstar : "F *\<^sub>B G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B (G \<rightarrow>\<^emph>\<^sub>B H)"|
+ImpstarT : "F *\<^sub>B G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B (G \<rightarrow>\<^emph>\<^sub>B H)"|
+ImpstarB : "F \<turnstile>\<^sub>B (G \<rightarrow>\<^emph>\<^sub>B H) \<Longrightarrow> F *\<^sub>B G \<turnstile>\<^sub>B H"|
 Assocl: "F *\<^sub>B (G *\<^sub>B H) \<turnstile>\<^sub>B (F *\<^sub>B G) *\<^sub>B H"|
 Assocr: "(F *\<^sub>B G) *\<^sub>B H \<turnstile>\<^sub>B F *\<^sub>B (G *\<^sub>B H)"|
 Comm : "(F *\<^sub>B G) \<turnstile>\<^sub>B (G *\<^sub>B F)"|
@@ -51,6 +53,7 @@ definition double_turnstile_CL :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow>
 
 section "Structure Definition"
 
+(*cite?*)
 datatype Antecedent_Structure =
 formulaA BBI_form|
 AddNilA       ("\<emptyset>\<^sub>A") |
@@ -150,8 +153,24 @@ MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrighta
 (*Cut-elimination*)
 cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"
 
+axiomatization where
+equivL : "(\<P> C' \<Longrightarrow> \<P> C) \<Longrightarrow> (C' \<equiv>\<^sub>D C)" and
+equivR : "(C' \<equiv>\<^sub>D C) \<Longrightarrow> (\<P> C' \<Longrightarrow> \<P> C)"
+
 section"Soundness and Completeness"
-(*
+
+
+lemma SoundnessCL5: "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"
+  apply simp
+proof -
+  assume "\<psi> X \<turnstile>\<^sub>B \<gamma> Y"
+  then have "(\<not>\<^sub>B \<gamma> Y) \<and>\<^sub>B \<psi> X \<turnstile>\<^sub>B \<bottom>\<^sub>B"
+    by (meson ConjE1 ConjE2 ConjI ImpB MP Notl)
+  then show "(\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<not>\<^sub>B \<psi> X"
+    using ImpT MP Notr by blast
+qed
+
+
 theorem Soundness: "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid(X \<turnstile>\<^sub>C Y)"
 proof (induction rule:Provable.induct)
 case (BotL X)
@@ -196,59 +215,65 @@ next
 next
   case (impL X F G Y)
   then show ?case 
-    using ConjE2 DisjI1 MP Valid.simps by blast
+    sorry
 next
   case (impR X F G)
   then show ?case 
-    by (simp add: Imp)
+    sorry
 next
   case (nilL X Y)
   then show ?case 
-    using ConjE2 DisjI1 MP Valid.simps by blast
+
+  proof -
+    have "\<psi> (\<emptyset>\<^sub>A ;\<^sub>A X) \<turnstile>\<^sub>B \<gamma> Y"
+      by (meson Valid.simps nilL.IH)
+    then show ?thesis
+      by (metis Ax ConjI MP Top Valid.simps \<psi>.simps(2) \<psi>.simps(4))
+  qed
 next
   case (nilL_sym X Y)
   then show ?case 
-    using ConjE1 DisjI2 MP Valid.simps by blast
+    sorry
 next
 case (nilR X Y)
   then show ?case 
-    using ConjE1 DisjI2 MP Valid.simps by blast
+    sorry
 next
   case (nilR_sym X Y)
   then show ?case 
-    using ConjE2 DisjI1 MP Valid.simps by blast
+    sorry
 next
   case (AAL W X Y Z)
   then show ?case 
-    using ConjE1 DisjI2 MP Valid.simps by blast
+    sorry
 next
   case (AAL_sym W X Y Z)
   then show ?case 
-    using ConjE2 DisjI1 MP Valid.simps by blast
+    sorry
 next
   case (AAR W X Y Z)
   then show ?case 
-    using ConjE1 DisjI2 MP Valid.simps by blast
+    sorry
 next
   case (AAR_sym W X Y Z)
   then show ?case 
-    using ConjE2 DisjI1 MP Valid.simps by blast
+    sorry
 next
   case (WkL X Z Y)
   then show ?case 
-    using ConjE1 DisjI2 MP Valid.simps by blast
+    sorry
 next
   case (WkR X Z Y)
   then show ?case 
-    using ConjE1 DisjI2 MP Valid.simps by blast
+    sorry
 next
   case (CtrL X Y)
   then show ?case 
-    using ConjE2 DisjI1 MP Valid.simps by blast
+    sorry
 next
   case (CtrR X Y)
   then show ?case 
-    using ConjE2 DisjI1 MP Valid.simps by blast
+    sorry
 next
   case (TopMultL X)
   then show ?case 
@@ -260,7 +285,7 @@ next
 next
   case (impMultL X F G Y)
   then show ?case 
-    using ConjE1 DisjI2 MP Valid.simps by blast
+    sorry
 next
   case TopMultR
   then show ?case 
@@ -272,53 +297,34 @@ next
 next
   case (impMultR X F G)
   then show ?case
-    by (simp add: Impstar)
+    sorry
 next
 case (nilMultL X Y)
 then show ?case 
-  using ConjE2 DisjI1 MP Valid.simps by blast
+  sorry
 next
 case (nilMultL_sym X Y)
 then show ?case 
-  using ConjE1 DisjI2 MP Valid.simps by blast
+  sorry
 next
 case (MAL W X Y Z)
 then show ?case 
-  using ConjE2 DisjI1 MP Valid.simps by blast
+  sorry
 next
 case (MAL_sym W X Y Z)
 then show ?case
-  using ConjE2 DisjI1 MP Valid.simps by blast
+  sorry
 next
   case (cut X F Y)
   then show ?case
-    using ConjE2 DisjI1 MP Valid.simps by blast
+    sorry
 qed
 
 
 
 section "display proof"
 
-*)
-theorem SoundTest:
-  assumes "C \<equiv>\<^sub>D C'" 
-  shows "Valid(C) \<Longrightarrow> Valid(C')"
 
-proof -
-  assume "C = ((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)" and "C' = (X \<turnstile>\<^sub>C \<sharp>Y ; Z)" 
-  have "Valid C"
-    by (meson ConjE1 DisjI2 MP Valid.elims(3))
-  then have "Valid C'" 
-    by (meson ConjE2 DisjI1 MP Valid.elims(3))
-  have "Valid(((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)) \<Longrightarrow> Valid((X \<turnstile>\<^sub>C \<sharp>Y ; Z))" sledgehammer
-    using \<open>C' = (X \<turnstile>\<^sub>C \<sharp> Y ; Z)\<close> \<open>Valid C'\<close> by blast
-  show "Valid(C) \<Longrightarrow> Valid(C')"
-  
-
-
-
-axiomatization where
-equiv : "(\<P> C' \<Longrightarrow> \<P> C) \<Longrightarrow> (C' \<equiv>\<^sub>D C)"
 
 type_synonym Structure = "Antecedent_Structure + Consequent_Structure"
 
@@ -348,63 +354,8 @@ fun ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 fun con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "con_part Z (X \<turnstile>\<^sub>C Y) = ((neg Z (Inl X)) \<or> (pos Z (Inr Y)))"
 
-lemma display :
-  assumes "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y)"
-  shows "(\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
-proof -
-  from assms have "((pos (Inl Z) (Inl X)) \<or> (neg (Inl Z) (Inr Y)))" by simp
-  have "(pos (Inl Z) (Inl X)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))"
-
-  proof (cases X )
-case (formulaA x1)
-then show ?thesis sledgehammer
-  using display_symm equiv by blast
-next
-case AddNilA
-then show ?thesis sledgehammer
-  using display_symm equiv by blast
-next
-case (SharpA x3)
-then show ?thesis sledgehammer
-  using display_symm equiv by blast
-next
-case (SemiColonA x41 x42)
-then show ?thesis 
-  using display_symm equiv by blast
-next
-  case MultNilA
-  then show ?thesis
-    using display_symm equiv by blast
-next
-  case (CommaA x61 x62)
-  then show ?thesis
-    using display_symm equiv by blast
-qed
-next 
-  have "(neg (Inl Z) (Inr Y)) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z  \<turnstile>\<^sub>C W)))"
-  proof (cases Y )
-case (formula x1)
-then show ?thesis sledgehammer
-  using TopR equiv by blast
-next
-case AddNil
-then show ?thesis sorry
-next
-case (Sharp x3)
-then show ?thesis sorry
-next
-case (SemiColon x41 x42)
-then show ?thesis sorry
-next
-  case (DotArrow x51 x52)
-  then show ?thesis sorry
-qed
-  show ?thesis 
-    using display_symm equiv by blast
-qed
-  
-   
-  
+lemma display : "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))" 
+  sorry
 
 
 
