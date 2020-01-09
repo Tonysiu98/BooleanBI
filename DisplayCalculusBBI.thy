@@ -18,6 +18,9 @@ datatype BBI_form =
   | Imp  BBI_form BBI_form  (infix "\<rightarrow>\<^sub>B" 101)
   | Mimp  BBI_form BBI_form (infix "\<rightarrow>\<^emph>\<^sub>B" 101)
 
+axiomatization where 
+implication : "(F \<rightarrow>\<^sub>B G) \<equiv> (\<not>\<^sub>BF \<or>\<^sub>B G)"
+
 section "BBI formula Axioms"
 
 (* Initial attempt of turnstile, this includes both CL and LM*)
@@ -74,16 +77,16 @@ primrec
   \<gamma> :: "Consequent_Structure \<Rightarrow> BBI_form"
   where
 "\<psi> (formulaA F)  = F"|
-"\<psi> AddNilA = \<top>\<^sub>B"|
-"\<psi> (SharpA X) =\<not>\<^sub>B \<gamma> X "|
-"\<psi> (SemiColonA X Y) = (\<psi> X) \<and>\<^sub>B (\<psi> Y)"|
-"\<psi> MultNilA = \<top>\<^sup>*\<^sub>B "|
-"\<psi> (CommaA X Y) = (\<psi> X) *\<^sub>B (\<psi> Y) "|
+"\<psi> \<emptyset>\<^sub>A = \<top>\<^sub>B"|
+"\<psi> (\<sharp>\<^sub>A X) =\<not>\<^sub>B \<gamma> X "|
+"\<psi> (X ;\<^sub>A Y) = (\<psi> X) \<and>\<^sub>B (\<psi> Y)"|
+"\<psi> \<oslash> = \<top>\<^sup>*\<^sub>B "|
+"\<psi> (X ,\<^sub>A Y) = (\<psi> X) *\<^sub>B (\<psi> Y) "|
 "\<gamma> (formula F) = F"|
-"\<gamma> AddNil = \<bottom>\<^sub>B "|
-"\<gamma> (Sharp X) =  \<not>\<^sub>B \<psi> X"|
-"\<gamma> (SemiColon X Y) = \<gamma> X \<or>\<^sub>B \<gamma> Y"|
-"\<gamma> (DotArrow X Y) = \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y"
+"\<gamma> \<emptyset> = \<bottom>\<^sub>B "|
+"\<gamma> (\<sharp> X) =  \<not>\<^sub>B \<psi> X"|
+"\<gamma> (X ; Y) = \<gamma> X \<or>\<^sub>B \<gamma> Y"|
+"\<gamma> (X \<rightarrow>\<circ> Y) = \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y"
 
 datatype Consecution = Consecution Antecedent_Structure Consequent_Structure (infix "\<turnstile>\<^sub>C" 50)
 
@@ -95,21 +98,22 @@ section "Display Calculus"
 
 inductive displayEquiv :: "Consecution \<Rightarrow> Consecution \<Rightarrow> bool " (infix "\<equiv>\<^sub>D" 100) where
 (*(X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) <>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z) <>\<^sub>D (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)*)
-positulatesCL1 [intro]:"((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"|
-positulatesCL2 [intro]:"(X \<turnstile>\<^sub>C \<sharp>Y ; Z) \<equiv>\<^sub>D (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)"|
+positulatesCL1 :"((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"|
+positulatesCL2 :"(X \<turnstile>\<^sub>C \<sharp>Y ; Z) \<equiv>\<^sub>D (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)"|
 (*(X \<turnstile>\<^sub>C Y ; Z) <>\<^sub>D (X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) <>\<^sub>D (X \<turnstile>\<^sub>C Z ; Y)*)
-positulatesCL3 [intro]:"(X \<turnstile>\<^sub>C Y ; Z) \<equiv>\<^sub>D (X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) "|
-positulatesCL4 [intro]:"(X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Z ; Y)"|
+positulatesCL3 :"(X \<turnstile>\<^sub>C Y ; Z) \<equiv>\<^sub>D (X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) "|
+positulatesCL4 :"(X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Z ; Y)"|
 (*(X \<turnstile>\<^sub>C Y) <>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X ) <>\<^sub>D (\<sharp>\<^sub>A\<sharp>\<^sub>AX \<turnstile>\<^sub>C Y)*)
-positulatesCL5 [intro]:"(X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X )"|
-positulatesCL6 [intro]:"(\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X ) \<equiv>\<^sub>D (\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y)"|
+positulatesCL5 :"(X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X )"|
+positulatesCL6 :"(\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X ) \<equiv>\<^sub>D (\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y)"|
 (*(X ,\<^sub>A Y \<turnstile>\<^sub>C Z) <>\<^sub>D (X \<turnstile>\<^sub>C Y \<comment>\<circ> Z ) <>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)*)
-positulatesCL7 [intro]:"(X ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z )"|
-positulatesCL8 [intro]:"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z ) \<equiv>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)"|
+positulatesCL7 :"(X ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z )"|
+positulatesCL8:"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z ) \<equiv>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)"|
 (*Reflective Transistive Symmetric*)
-display_refl  [simp]:"C \<equiv>\<^sub>D C"|
-display_symm  [simp]:"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C"|
-display_trans [simp]:"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C'' \<Longrightarrow> C \<equiv>\<^sub>D C''"
+display_refl :"C \<equiv>\<^sub>D C"|
+display_symm :"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C"|
+display_trans :"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C'' \<Longrightarrow> C \<equiv>\<^sub>D C''"
+
 
 inductive Provable :: "Consecution \<Rightarrow>bool" ("\<P>") where
 (*Logical Rules For DL_CL*)
@@ -130,10 +134,10 @@ nilL : "\<P> (\<emptyset>\<^sub>A ;\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrigh
 nilL_sym: "\<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (\<emptyset>\<^sub>A ;\<^sub>A X \<turnstile>\<^sub>C Y)"|
 nilR : "\<P> (X \<turnstile>\<^sub>C Y ; \<emptyset>) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C Y)"|
 nilR_sym: "\<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C Y ; \<emptyset>)"|
-AAL : "\<P> (W ;\<^sub>A (X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> ((W ;\<^sub>A X) ;\<^sub>A Y \<turnstile>\<^sub>C Z)"|
-AAL_sym: "\<P> ((W ;\<^sub>A X) ;\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> (W ;\<^sub>A (X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)"|
-AAR : "\<P> (W \<turnstile>\<^sub>C (X ; Y) ; Z) \<Longrightarrow> \<P> (W \<turnstile>\<^sub>C X ; (Y ; Z))"|
-AAR_sym: "\<P> (W \<turnstile>\<^sub>C X ; (Y ; Z)) \<Longrightarrow> \<P> (W \<turnstile>\<^sub>C (X ; Y) ; Z)"|
+AAL : "\<P> ((W ;\<^sub>A (X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)) \<Longrightarrow> \<P> (((W ;\<^sub>A X) ;\<^sub>A Y \<turnstile>\<^sub>C Z))"|
+AAL_sym: "\<P> (((W ;\<^sub>A X) ;\<^sub>A Y \<turnstile>\<^sub>C Z)) \<Longrightarrow> \<P> ((W ;\<^sub>A (X ;\<^sub>A Y) \<turnstile>\<^sub>C Z))"|
+AAR : "\<P> ((W \<turnstile>\<^sub>C (X ; Y) ; Z)) \<Longrightarrow> \<P> ((W \<turnstile>\<^sub>C X ; (Y ; Z)))"|
+AAR_sym: "\<P> ((W \<turnstile>\<^sub>C X ; (Y ; Z))) \<Longrightarrow> \<P> ((W \<turnstile>\<^sub>C (X ; Y) ; Z))"|
 WkL: "\<P> (X \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> (X ;\<^sub>A Y \<turnstile>\<^sub>C Z)"|
 WkR: "\<P> (X \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C Y ; Z)"|
 CtrL: "\<P> (X ;\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C Y)"|
@@ -160,7 +164,7 @@ equivR : "(C' \<equiv>\<^sub>D C) \<Longrightarrow> (\<P> C' \<Longrightarrow> \
 section"Soundness and Completeness"
 
 
-lemma SoundnessCL5: "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"
+lemma SoundnessCL5L: "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"
   apply simp
 proof -
   assume "\<psi> X \<turnstile>\<^sub>B \<gamma> Y"
@@ -170,6 +174,19 @@ proof -
     using ImpT MP Notr by blast
 qed
 
+lemma SoundnessCL5R : "Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)"
+  apply simp
+proof -
+  assume "(\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<not>\<^sub>B \<psi> X"
+  then have "\<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<bottom>\<^sub>B"
+    by (meson ConjE1 ConjE2 ConjI ImpB MP Notl)
+  then show "\<psi> X \<turnstile>\<^sub>B \<gamma> Y"
+    by (meson ImpT MP Notnot Notr)
+qed
+
+lemma SoundnessCL1L: "Valid(((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"
+  apply simp
+  using implication by blast
 
 theorem Soundness: "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid(X \<turnstile>\<^sub>C Y)"
 proof (induction rule:Provable.induct)
@@ -219,11 +236,10 @@ next
 next
   case (impR X F G)
   then show ?case 
-    sorry
+    by (simp add: ImpT)
 next
   case (nilL X Y)
   then show ?case 
-
   proof -
     have "\<psi> (\<emptyset>\<^sub>A ;\<^sub>A X) \<turnstile>\<^sub>B \<gamma> Y"
       by (meson Valid.simps nilL.IH)
@@ -233,15 +249,20 @@ next
 next
   case (nilL_sym X Y)
   then show ?case 
-    sorry
+    by (metis ConjE2 Consecution.inject MP Valid.elims(2) Valid.elims(3) \<psi>.simps(4))
 next
 case (nilR X Y)
   then show ?case 
-    sorry
+  proof -
+    have "\<forall>b. b \<or>\<^sub>B \<bottom>\<^sub>B \<turnstile>\<^sub>B b"
+      using Ax Bot DisjE by presburger
+    then show ?thesis
+      using MP Valid.simps \<gamma>.simps(2) \<gamma>.simps(4) nilR.IH by presburger
+  qed
 next
   case (nilR_sym X Y)
   then show ?case 
-    sorry
+    by (simp add: DisjI1 MP)
 next
   case (AAL W X Y Z)
   then show ?case 
@@ -261,19 +282,19 @@ next
 next
   case (WkL X Z Y)
   then show ?case 
-    sorry
+    by (metis ConjE1 Consecution.inject MP Valid.elims(2) Valid.elims(3) \<psi>.simps(4))
 next
   case (WkR X Z Y)
   then show ?case 
-    sorry
+    by (simp add: DisjI2 MP)
 next
   case (CtrL X Y)
   then show ?case 
-    sorry
+    by (metis Ax ConjI MP Valid.simps \<psi>.simps(4))
 next
   case (CtrR X Y)
   then show ?case 
-    sorry
+    by (metis Ax DisjE MP Valid.simps \<gamma>.simps(4))
 next
   case (TopMultL X)
   then show ?case 
@@ -297,27 +318,32 @@ next
 next
   case (impMultR X F G)
   then show ?case
-    sorry
+    by (simp add: ImpstarT)
 next
 case (nilMultL X Y)
 then show ?case 
-  sorry
+  by (metis Comm MP Topr Valid.simps \<psi>.simps(5) \<psi>.simps(6))
 next
 case (nilMultL_sym X Y)
 then show ?case 
-  sorry
+  by (metis Comm Consecution.inject MP Topl Valid.elims(2) Valid.elims(3) \<psi>.simps(5) \<psi>.simps(6))
 next
 case (MAL W X Y Z)
 then show ?case 
-  sorry
+  using Assocr MP by fastforce
 next
 case (MAL_sym W X Y Z)
 then show ?case
-  sorry
+  using Assocl MP by fastforce
 next
   case (cut X F Y)
   then show ?case
-    sorry
+  proof -
+    have "F \<turnstile>\<^sub>B \<gamma> Y"
+      using Valid.simps \<psi>.simps(1) cut.IH(2) by presburger
+    then show ?thesis
+      by (metis (no_types) MP Valid.simps \<gamma>.simps(1) cut.IH(1))
+  qed
 qed
 
 
@@ -355,13 +381,57 @@ fun con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "con_part Z (X \<turnstile>\<^sub>C Y) = ((neg Z (Inl X)) \<or> (pos Z (Inr Y)))"
 
 lemma display : "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))" 
-  sorry
+  apply simp
+proof -
+  assume "pos (Inl Z) (Inl X)"
+  have "pos (Inl Z) (Inl X) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
+  proof (cases X)
+case (formulaA x1)
+then show ?thesis
+  using TopR equivL by blast
+next
+case AddNilA
+then show ?thesis 
+  using TopR equivL by blast
+next
+case (SharpA x3)
+  then show ?thesis 
+    using TopR equivL by blast
+next
+  case (SemiColonA x41 x42)
+  then show ?thesis sorry
+next
+  case MultNilA
+  then show ?thesis sorry
+next
+  case (CommaA x61 x62)
+  then show ?thesis sorry
+qed
 
-
-
-
-
-   
+next
+  assume "neg (Inl Z) (Inr Y)"
+  have "neg (Inl Z) (Inr Y) \<Longrightarrow> (\<exists>W. ((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
+  proof (cases Y)
+case (formula x1)
+then show ?thesis sorry
+next
+case AddNil
+then show ?thesis sorry
+next
+  case (Sharp x3)
+  then show ?thesis sorry
+next
+  case (SemiColon x41 x42)
+  then show ?thesis sorry
+next
+  case (DotArrow x51 x52)
+  then show ?thesis
+    using TopR equivL by blast
+qed
+next
+  show ?thesis
+    using TopR equivL by blast
+qed
   
 
 end
