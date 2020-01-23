@@ -56,6 +56,7 @@ definition double_turnstile_CL :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow>
 
 section "Structure Definition"
 
+(*cite?*)
 datatype Antecedent_Structure =
 formulaA BBI_form|
 AddNilA       ("\<emptyset>\<^sub>A") |
@@ -103,11 +104,11 @@ positulatesCL2 :"(X \<turnstile>\<^sub>C \<sharp>Y ; Z) \<equiv>\<^sub>D (Y ;\<^
 positulatesCL3 :"(X \<turnstile>\<^sub>C Y ; Z) \<equiv>\<^sub>D (X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) "|
 positulatesCL4 :"(X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Z ; Y)"|
 (*(X \<turnstile>\<^sub>C Y) <>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X) <>\<^sub>D (\<sharp>\<^sub>A\<sharp>\<^sub>AX \<turnstile>\<^sub>C Y)*)
-positulatesCL5 :"(X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"|
-positulatesCL6 :"(\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X) \<equiv>\<^sub>D (\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y)"|
+positulatesCL5 :"(X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X )"|
+positulatesCL6 :"(\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X ) \<equiv>\<^sub>D (\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y)"|
 (*(X ,\<^sub>A Y \<turnstile>\<^sub>C Z) <>\<^sub>D (X \<turnstile>\<^sub>C Y \<comment>\<circ> Z ) <>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)*)
 positulatesCL7 :"(X ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z )"|
-positulatesCL8:"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z) \<equiv>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)"|
+positulatesCL8:"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z ) \<equiv>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)"|
 (*Reflective Transistive Symmetric*)
 display_refl :"C \<equiv>\<^sub>D C"|
 display_symm :"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C"|
@@ -162,8 +163,7 @@ inductive pos :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
 and neg :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
 where
 "pos X X" |
-"neg Z (Inl X)  \<Longrightarrow> pos Z (Inr(\<sharp> X))"|
-"neg Z (Inr X)  \<Longrightarrow> pos Z (Inl (\<sharp>\<^sub>A X))"|
+"neg Z (Inl X)  \<Longrightarrow> pos Z (Inr(\<sharp>X))"|
 "pos Z (Inl X1) \<Longrightarrow> pos Z (Inl (X1 ;\<^sub>A X2))"|
 "pos Z (Inl X2) \<Longrightarrow> pos Z (Inl (X1 ;\<^sub>A X2))"|
 "pos Z (Inl X1) \<Longrightarrow> pos Z (Inl (X1 ,\<^sub>A X2))"|
@@ -171,14 +171,13 @@ where
 "neg Z (Inl X1) \<Longrightarrow> pos Z (Inr (X1 \<rightarrow>\<circ> X2))"|
 "pos Z (Inr X2) \<Longrightarrow> pos Z (Inr (X1 \<rightarrow>\<circ> X2))"|
 (* Reverse pos and neg *)
-"pos Z (Inr X)  \<Longrightarrow> neg Z (Inl(\<sharp>\<^sub>A X))"|
 "pos Z (Inl X)  \<Longrightarrow> neg Z (Inr(\<sharp>X))"|
 "neg Z (Inl X1) \<Longrightarrow> neg Z (Inl (X1 ;\<^sub>A X2))"|
 "neg Z (Inl X2) \<Longrightarrow> neg Z (Inl (X1 ;\<^sub>A X2))"|
 "neg Z (Inl X1) \<Longrightarrow> neg Z (Inl (X1 ,\<^sub>A X2))"|
 "neg Z (Inl X2) \<Longrightarrow> neg Z (Inl (X1 ,\<^sub>A X2))"|
 "pos Z (Inl X1) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"|
-"neg Z (Inr X2) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"
+"pos Z (Inr X2) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"
 
 
 end

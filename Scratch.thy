@@ -189,10 +189,34 @@ done
 (*>*)
 
 
-lemma "(F \<longrightarrow> G) \<Longrightarrow>  \<not>F \<or> G"
 
+lemma  "A \<longrightarrow> B \<Longrightarrow> \<not>A \<or> B"
+proof -
+  assume "A \<longrightarrow> B"
+  have "\<not>\<not>(\<not>A \<or> B)"
+  proof
+    assume "\<not>(\<not>A \<or> B)"
+    have "\<not>\<not> A"
+    proof
+      assume "\<not> A"
+      show False
+      proof - 
+        have "\<not>A \<or> B" 
+          by (simp add: \<open>\<not> A\<close>)
+        show False 
+          using \<open>\<not> (\<not> A \<or> B)\<close> \<open>\<not> A\<close> by auto
+      qed
+    qed
+    from \<open>\<not>\<not> A\<close> have A by blast
+    then have B using \<open>A \<longrightarrow> B\<close> by blast
+    hence "\<not>A \<or> B" by (rule disjI2)
+    thus False using \<open>\<not> (\<not> A \<or> B)\<close> by blast
+  qed
+  then have "\<not>A \<or> B" using \<open>\<not>\<not>(\<not>A \<or> B)\<close> by blast
+  thus ?thesis 
+    by blast
+qed
 
- 
 
 section "Notes"
 text \<open> In this theory, we are defining syntax for Boolean BI formula and its rules and axioms.
