@@ -177,5 +177,11 @@ where
 "pos Z (Inl X1) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"|
 "neg Z (Inr X2) \<Longrightarrow> neg Z (Inr (X1 \<rightarrow>\<circ> X2))"
 
+fun ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
+"ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
+
+fun con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
+"con_part Z (X \<turnstile>\<^sub>C Y) = ((neg Z (Inl X)) \<or> (pos Z (Inr Y)))"
+
 
 end

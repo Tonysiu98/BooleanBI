@@ -3,6 +3,7 @@ theory proofs
 begin
 section"Soundness and Completeness"
 
+section"shortcut lemmas"
 
 lemma NotnotR : "F \<turnstile>\<^sub>B \<not>\<^sub>B \<not>\<^sub>B F"
   by (meson ConjE1 ConjE2 ConjI ImpB ImpT MP Notl Notr)
@@ -79,7 +80,7 @@ proof-
 qed
   
      
-
+section"Soundness for Postulates"
     
 lemma SoundPostulateCL1 : "Valid((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"
   apply simp
@@ -92,6 +93,10 @@ proof-
     using MP \<open>\<psi> X \<turnstile>\<^sub>B \<psi> Y \<rightarrow>\<^sub>B \<gamma> Z\<close> by blast
 qed
 
+lemma SoundPostulateCL1R: "Valid (X \<turnstile>\<^sub>C \<sharp>Y ; Z) \<Longrightarrow> Valid ((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)" 
+  apply simp
+  using ImpB MP disToimp by blast
+
 lemma SoundPostulateCL2 : "Valid((X \<turnstile>\<^sub>C \<sharp>Y ; Z)) \<Longrightarrow> Valid (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)"
   apply simp
 proof - 
@@ -100,6 +105,10 @@ proof -
   then show "\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<psi> Y) \<or>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> Y \<and>\<^sub>B \<psi> X \<turnstile>\<^sub>B \<gamma> Z" using MP commAnd ImpB by blast
 qed
 
+lemma SoundPostulateCL2R :"Valid(Y ;\<^sub>A X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid((X \<turnstile>\<^sub>C \<sharp>Y ; Z))"
+  apply simp
+  using ImpT MP commAnd impTodis by blast
+
 lemma SoundPostulateCL3 : "Valid ((X \<turnstile>\<^sub>C Y ; Z)) \<Longrightarrow> Valid((X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z))"
   apply simp
 proof -
@@ -107,6 +116,20 @@ proof -
   have "\<gamma> Y \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z" sorry
   then show "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z"
     using ImpB MP by blast
+qed
+
+lemma SoundPostulateCL3R: "Valid((X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z)) \<Longrightarrow> Valid ((X \<turnstile>\<^sub>C Y ; Z))"
+  apply simp
+proof-
+  assume "\<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z"
+  then have "\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z" 
+    by (simp add: ImpT)
+  then have "\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B (\<not>\<^sub>B \<gamma> Y)) \<or>\<^sub>B \<gamma> Z " 
+    using MP impTodis by blast
+  have "(\<not>\<^sub>B (\<not>\<^sub>B \<gamma> Y)) \<or>\<^sub>B \<gamma> Z  \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z" 
+    using DisjE DisjI1 DisjI2 MP Notnot by blast
+  show "\<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z " 
+    using MP \<open>(\<not>\<^sub>B \<not>\<^sub>B \<gamma> Y) \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z\<close> \<open>\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<not>\<^sub>B \<gamma> Y) \<or>\<^sub>B \<gamma> Z\<close> by blast
 qed
 
 lemma SoundPostulateCL4 : "Valid (X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Z ; Y)"
@@ -122,6 +145,22 @@ proof-
     by (meson MP \<open>(\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<not>\<^sub>B \<gamma> Y) \<or>\<^sub>B \<gamma> Z\<close> \<open>\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z\<close> commOR)
 qed
 
+lemma SoundPostulateCL4R : "Valid (X \<turnstile>\<^sub>C Z ; Y) \<Longrightarrow> Valid (X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z)"
+  apply simp
+proof -
+  assume "\<psi> X \<turnstile>\<^sub>B \<gamma> Z \<or>\<^sub>B \<gamma> Y"
+  have "\<gamma> Z \<or>\<^sub>B \<gamma> Y \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z" 
+    by (simp add: commOR)
+  then have "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z"
+    using MP \<open>\<psi> X \<turnstile>\<^sub>B \<gamma> Z \<or>\<^sub>B \<gamma> Y\<close> by blast
+   have "\<gamma> Y \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z"
+     by (meson DisjE DisjI1 DisjI2 MP NotnotR disToimp)
+   then have "\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z" 
+     using MP \<open>\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z\<close> by blast
+   show "\<psi> X \<turnstile>\<^sub>B \<gamma> Z \<or>\<^sub>B \<gamma> Y \<Longrightarrow> \<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z" 
+     by (simp add: ImpB \<open>\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z\<close>)
+ qed
+
 lemma SoundPostulateCL5 : "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"
   apply simp
 proof-
@@ -135,6 +174,10 @@ proof-
   then have "(\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<not>\<^sub>B \<psi> X" using Notl MP by blast
   then show "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<Longrightarrow> (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<not>\<^sub>B \<psi> X" by simp
 qed
+
+lemma SoundPostulateCL5R : "Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y)"
+  apply simp
+  by (meson ImpB ImpT MP Notl Notnot Notr commAnd)
 
 lemma SoundPostulateCL6 : "Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X) \<Longrightarrow> Valid (\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y)"
   apply simp
@@ -150,6 +193,10 @@ proof -
   then show "(\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<not>\<^sub>B \<psi> X \<Longrightarrow> (\<not>\<^sub>B \<not>\<^sub>B \<psi> X) \<turnstile>\<^sub>B \<gamma> Y" by simp 
 qed
 
+
+lemma SoundPostulateCL6R : "Valid (\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"
+  using SoundPostulateCL5 SoundPostulateCL5R SoundPostulateCL6 by blast
+
 lemma SoundPostulateCL7 : "Valid (X ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z)"
   apply simp
 proof - 
@@ -157,6 +204,9 @@ proof -
   then have "\<psi> X \<turnstile>\<^sub>B \<psi> Y  \<rightarrow>\<^emph>\<^sub>B \<gamma> Z" using ImpstarT by blast
   thus "\<psi> X *\<^sub>B \<psi> Y \<turnstile>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> X \<turnstile>\<^sub>B \<psi> Y \<rightarrow>\<^emph>\<^sub>B \<gamma> Z" by simp
 qed
+
+lemma SoundPostulateCL7R : "Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z) \<Longrightarrow> Valid (X ,\<^sub>A Y \<turnstile>\<^sub>C Z)"
+  by (simp add: ImpstarB)
 
 lemma SoundPostulateCL8 : "Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z) \<Longrightarrow> Valid (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)"
   apply simp 
@@ -167,6 +217,17 @@ proof -
   thus "\<psi> X \<turnstile>\<^sub>B \<psi> Y \<rightarrow>\<^emph>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> Y *\<^sub>B \<psi> X \<turnstile>\<^sub>B \<gamma> Z" by simp
 qed
  
+
+
+lemma SoundPostulateCL8R : "Valid (Y ,\<^sub>A X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z)"
+  using SoundPostulateCL7 SoundPostulateCL8 by blast
+
+lemma SoundPostulateTrans:
+  assumes "Valid C \<Longrightarrow> Valid C'" and "Valid C' \<Longrightarrow> Valid C''"
+  shows " Valid C \<Longrightarrow> Valid C''"
+  using assms(1) assms(2) by auto
+
+section"Soundness for logical and structural rules"
 
 lemma SoundnessRules: "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid(X\<turnstile>\<^sub>C Y)"
  proof (induction rule:Provable.induct)
@@ -455,14 +516,8 @@ qed
 
 
 
+
 section "display proof"
-
-
-fun ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
-"ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
-
-fun con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
-"con_part Z (X \<turnstile>\<^sub>C Y) = ((neg Z (Inl X)) \<or> (pos Z (Inr Y)))"
 
 lemma displayAnt : "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))"
   apply simp
