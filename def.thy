@@ -10,7 +10,7 @@ datatype BBI_form =
   | Falsity                 ("\<bottom>\<^sub>B")
   | Mfalsity                ("\<top>\<^sup>*\<^sub>B")
   | Atom atom
-  | Neg BBI_form            ("\<not>\<^sub>B _" 99)
+  | Neg BBI_form            ("\<not>\<^sub>B _" 101)
   | Con BBI_form BBI_form   (infix "\<and>\<^sub>B" 101)
   | MCon BBI_form BBI_form  (infix "*\<^sub>B" 101)
   | Dis BBI_form BBI_form   (infix "\<or>\<^sub>B" 101)
@@ -47,9 +47,6 @@ Assocl: "F *\<^sub>B (G *\<^sub>B H) \<turnstile>\<^sub>B (F *\<^sub>B G) *\<^su
 Assocr: "(F *\<^sub>B G) *\<^sub>B H \<turnstile>\<^sub>B F *\<^sub>B (G *\<^sub>B H)"|
 Comm : "(F *\<^sub>B G) \<turnstile>\<^sub>B (G *\<^sub>B F)"|
 ConjIstar : "F1  \<turnstile>\<^sub>B G1 \<Longrightarrow> F2  \<turnstile>\<^sub>B G2 \<Longrightarrow> (F1 *\<^sub>B F2) \<turnstile>\<^sub>B (G1 *\<^sub>B G2)"
-
- 
-
 
 definition double_turnstile_CL :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool" (infix "\<stileturn>\<turnstile>\<^sub>B" 55)
   where " F \<stileturn>\<turnstile>\<^sub>B G \<equiv> (F \<turnstile>\<^sub>B G) \<and> (G \<turnstile>\<^sub>B F) "

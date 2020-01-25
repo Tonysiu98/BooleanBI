@@ -3,27 +3,124 @@ theory proofs
 begin
 section"Soundness and Completeness"
 
+
+lemma NotnotR : "F \<turnstile>\<^sub>B \<not>\<^sub>B \<not>\<^sub>B F"
+  by (meson ConjE1 ConjE2 ConjI ImpB ImpT MP Notl Notr)
+
+lemma commOR :"F \<or>\<^sub>B G \<turnstile>\<^sub>B G \<or>\<^sub>B F" 
+  by (simp add: DisjE DisjI1 DisjI2)
+
 lemma commAnd : "F \<and>\<^sub>B G \<turnstile>\<^sub>B G \<and>\<^sub>B F"
   by (simp add: ConjE1 ConjE2 ConjI)
 
-lemma impTodis:"F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B \<not>\<^sub>BF \<or>\<^sub>B G"
-  sorry
+lemma disToimp : "(\<not>\<^sub>BF) \<or>\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B G"
+proof
+  show "(\<not>\<^sub>B F) \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B G" 
+    using Bot ImpB ImpT MP Notl by blast
+  show  "G \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B G"
+    by (simp add: ConjE1 ImpT) 
+qed
+
+lemma impTodis:"F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B(\<not>\<^sub>BF) \<or>\<^sub>B G"
+proof-
+  have "\<top>\<^sub>B \<turnstile>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)"
+  proof-
+    have "F \<turnstile>\<^sub>B (F \<or>\<^sub>B (\<not>\<^sub>B F))" using DisjI1 by simp
+    then have "F \<turnstile>\<^sub>B (\<not>\<^sub>B \<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F)))" using NotnotR MP by blast
+    then have "F \<turnstile>\<^sub>B  (\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<rightarrow>\<^sub>B \<bottom>\<^sub>B"  using MP Notl by blast
+    then have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B  F \<rightarrow>\<^sub>B \<bottom>\<^sub>B" using ImpB ImpT MP commAnd by blast
+    then have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B (\<not>\<^sub>B F)" using MP Notr by blast
+    have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B F" by (meson ConjI DisjI1 DisjI2 ImpB MP \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B \<not>\<^sub>B F\<close> disToimp)
+    have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B F \<and>\<^sub>B (\<not>\<^sub>B F)" by (simp add: ConjI \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B F\<close> \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B \<not>\<^sub>B F\<close>)
+    have "F \<and>\<^sub>B (\<not>\<^sub>B F) \<turnstile>\<^sub>B \<bottom>\<^sub>B" using ImpB MP Notl commAnd by blast
+    then have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B \<bottom>\<^sub>B " 
+      using MP \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B F \<and>\<^sub>B (\<not>\<^sub>B F)\<close> by blast
+    then have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B \<top>\<^sub>B \<rightarrow>\<^sub>B \<bottom>\<^sub>B" using Bot MP by blast
+    then have  "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<and>\<^sub>B \<top>\<^sub>B \<turnstile>\<^sub>B \<bottom>\<^sub>B" 
+      by (simp add: ImpB)
+    then have  "\<top>\<^sub>B \<turnstile>\<^sub>B (\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F)))\<rightarrow>\<^sub>B \<bottom>\<^sub>B " 
+      using ImpT MP commAnd by blast
+    then show "\<top>\<^sub>B \<turnstile>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)"
+      using MP Notnot Notr by blast
+  qed
+  have "F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B \<top>\<^sub>B" using Top by simp
+  then have "F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)" 
+    using MP \<open>\<top>\<^sub>B \<turnstile>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)\<close> by blast
+  have "F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B G" using Ax by simp
+  then have "F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<and>\<^sub>B (F \<or>\<^sub>B (\<not>\<^sub>B F))" 
+    using ConjI \<open>F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)\<close> by blast
+  have "(F \<rightarrow>\<^sub>B G) \<and>\<^sub>B (F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G"
+  proof-
+    have "(\<not>\<^sub>B F) \<and>\<^sub>B (F \<rightarrow>\<^sub>B G) \<turnstile>\<^sub>B (\<not>\<^sub>B F)" and  "(\<not>\<^sub>B F) \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G"
+       apply (simp add: ConjE1)
+      by (simp add: DisjI1)
+   then have "(\<not>\<^sub>B F) \<and>\<^sub>B (F \<rightarrow>\<^sub>B G) \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G" 
+     using MP by blast
+   then have "(\<not>\<^sub>B F) \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<rightarrow>\<^sub>B ((\<not>\<^sub>B F) \<or>\<^sub>B G)" 
+     by (simp add: ImpT)
+   have "F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B G" using Ax by simp
+   then have "F \<and>\<^sub>B (F \<rightarrow>\<^sub>B G) \<turnstile>\<^sub>B G" 
+     using ImpB MP commAnd by blast
+   have "G \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G" 
+     by (simp add: DisjI2)
+   then have "F \<and>\<^sub>B (F \<rightarrow>\<^sub>B G) \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G" 
+     using MP \<open>F \<and>\<^sub>B (F \<rightarrow>\<^sub>B G) \<turnstile>\<^sub>B G\<close> by blast
+   then have "F \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<rightarrow>\<^sub>B ((\<not>\<^sub>B F) \<or>\<^sub>B G)"
+     by (simp add: ImpT)
+   have "F \<or>\<^sub>B (\<not>\<^sub>B F) \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<rightarrow>\<^sub>B ((\<not>\<^sub>B F) \<or>\<^sub>B G)" 
+     using \<open>F \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<rightarrow>\<^sub>B ((\<not>\<^sub>B F) \<or>\<^sub>B G)\<close> \<open>(\<not>\<^sub>B F) \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<rightarrow>\<^sub>B ((\<not>\<^sub>B F) \<or>\<^sub>B G)\<close> DisjE by blast
+   then have "(F \<or>\<^sub>B (\<not>\<^sub>B F)) \<and>\<^sub>B (F \<rightarrow>\<^sub>B G) \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G" 
+     using ImpB by blast
+   then show "(F \<rightarrow>\<^sub>B G) \<and>\<^sub>B (F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G"
+     using MP commAnd by blast
+ qed
+  show "F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B(\<not>\<^sub>BF) \<or>\<^sub>B G" 
+    using MP \<open>(F \<rightarrow>\<^sub>B G) \<and>\<^sub>B (F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B (\<not>\<^sub>B F) \<or>\<^sub>B G\<close> \<open>F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<and>\<^sub>B (F \<or>\<^sub>B (\<not>\<^sub>B F))\<close> by blast
+qed
+  
+     
+
     
 lemma SoundPostulateCL1 : "Valid((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"
   apply simp
-  sorry
- 
+proof-
+  assume "\<psi> X \<and>\<^sub>B \<psi> Y \<turnstile>\<^sub>B \<gamma> Z" 
+  then have "\<psi> X \<turnstile>\<^sub>B \<psi> Y \<rightarrow>\<^sub>B \<gamma> Z" using ImpT by blast
+  have "\<psi> Y \<rightarrow>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<psi> Y) \<or>\<^sub>B \<gamma> Z" 
+    by (simp add: impTodis)
+  then show "\<psi> X \<and>\<^sub>B \<psi> Y \<turnstile>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<psi> Y) \<or>\<^sub>B \<gamma> Z" 
+    using MP \<open>\<psi> X \<turnstile>\<^sub>B \<psi> Y \<rightarrow>\<^sub>B \<gamma> Z\<close> by blast
+qed
+
 lemma SoundPostulateCL2 : "Valid((X \<turnstile>\<^sub>C \<sharp>Y ; Z)) \<Longrightarrow> Valid (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)"
   apply simp
-  sorry
+proof - 
+  assume "\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<psi> Y) \<or>\<^sub>B \<gamma> Z"
+  have " (\<not>\<^sub>B \<psi> Y) \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B  \<psi> Y \<rightarrow>\<^sub>B \<gamma> Z" using disToimp by simp
+  then show "\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<psi> Y) \<or>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> Y \<and>\<^sub>B \<psi> X \<turnstile>\<^sub>B \<gamma> Z" using MP commAnd ImpB by blast
+qed
 
 lemma SoundPostulateCL3 : "Valid ((X \<turnstile>\<^sub>C Y ; Z)) \<Longrightarrow> Valid((X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z))"
   apply simp
-  sorry
+proof -
+  assume "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z"
+  have "\<gamma> Y \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z" sorry
+  then show "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z"
+    using ImpB MP by blast
+qed
 
 lemma SoundPostulateCL4 : "Valid (X ;\<^sub>A \<sharp>\<^sub>AY \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Z ; Y)"
   apply simp
-  sorry
+proof- 
+  assume "\<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z" 
+  then have "\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z"
+    by (simp add: ImpT)
+  have "(\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<not>\<^sub>B \<gamma> Y) \<or>\<^sub>B \<gamma> Z" using impTodis by simp
+  then have "(\<not>\<^sub>B \<not>\<^sub>B \<gamma> Y) \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z" 
+    by (meson DisjE DisjI2 MP Notnot commOR)
+  then show "\<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> X \<turnstile>\<^sub>B \<gamma> Z \<or>\<^sub>B \<gamma> Y" 
+    by (meson MP \<open>(\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<not>\<^sub>B \<gamma> Y) \<or>\<^sub>B \<gamma> Z\<close> \<open>\<psi> X \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z\<close> commOR)
+qed
 
 lemma SoundPostulateCL5 : "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> Valid (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"
   apply simp
