@@ -5,6 +5,18 @@ section"Soundness and Completeness"
 
 section"shortcut lemmas"
 
+lemma assocAnd1 : "F \<and>\<^sub>B (G \<and>\<^sub>B H) \<turnstile>\<^sub>B (F \<and>\<^sub>B G) \<and>\<^sub>B H"
+  by (meson ConjE1 ConjE2 ConjI MP)
+
+lemma assocAnd2 : "(F \<and>\<^sub>B G) \<and>\<^sub>B H \<turnstile>\<^sub>B F \<and>\<^sub>B (G \<and>\<^sub>B H)"
+  by (meson ConjE1 ConjE2 ConjI MP)
+
+lemma assocOr1 : "F \<or>\<^sub>B (G \<or>\<^sub>B H) \<turnstile>\<^sub>B (F \<or>\<^sub>B G) \<or>\<^sub>B H" 
+  by (meson DisjE DisjI1 DisjI2 MP)
+
+lemma assocOr2 : "(F \<or>\<^sub>B G) \<or>\<^sub>B H \<turnstile>\<^sub>B F \<or>\<^sub>B (G \<or>\<^sub>B H)" 
+  by (meson DisjE DisjI1 DisjI2 MP)
+
 lemma NotnotR : "F \<turnstile>\<^sub>B \<not>\<^sub>B \<not>\<^sub>B F"
   by (meson ConjE1 ConjE2 ConjI ImpB ImpT MP Notl Notr)
 
@@ -113,7 +125,8 @@ lemma SoundPostulateCL3 : "Valid ((X \<turnstile>\<^sub>C Y ; Z)) \<Longrightarr
   apply simp
 proof -
   assume "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z"
-  have "\<gamma> Y \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z" sorry
+  have "\<gamma> Y \<or>\<^sub>B \<gamma> Z \<turnstile>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<rightarrow>\<^sub>B \<gamma> Z" 
+    by (meson DisjE DisjI1 DisjI2 MP NotnotR disToimp)
   then show "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> X \<and>\<^sub>B (\<not>\<^sub>B \<gamma> Y) \<turnstile>\<^sub>B \<gamma> Z"
     using ImpB MP by blast
 qed
@@ -216,16 +229,11 @@ proof -
   then have "\<psi> Y *\<^sub>B \<psi> X \<turnstile>\<^sub>B \<gamma> Z" using Comm MP by blast
   thus "\<psi> X \<turnstile>\<^sub>B \<psi> Y \<rightarrow>\<^emph>\<^sub>B \<gamma> Z \<Longrightarrow> \<psi> Y *\<^sub>B \<psi> X \<turnstile>\<^sub>B \<gamma> Z" by simp
 qed
- 
-
 
 lemma SoundPostulateCL8R : "Valid (Y ,\<^sub>A X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z)"
   using SoundPostulateCL7 SoundPostulateCL8 by blast
 
-lemma SoundPostulateTrans:
-  assumes "Valid C \<Longrightarrow> Valid C'" and "Valid C' \<Longrightarrow> Valid C''"
-  shows " Valid C \<Longrightarrow> Valid C''"
-  using assms(1) assms(2) by auto
+
 
 section"Soundness for logical and structural rules"
 
@@ -331,7 +339,8 @@ next
     have "\<psi> X \<turnstile>\<^sub>B F" and "G \<turnstile>\<^sub>B \<gamma> Y" 
       using impL.IH(1) apply auto[1]
       using impL.IH(2) by auto
-    have "(\<psi> X \<rightarrow>\<^sub>B \<gamma> Y)\<turnstile>\<^sub>B ((\<not>\<^sub>B \<psi> X) \<or>\<^sub>B \<gamma> Y)" sorry
+    have "(\<psi> X \<rightarrow>\<^sub>B \<gamma> Y)\<turnstile>\<^sub>B (\<not>\<^sub>B \<psi> X) \<or>\<^sub>B \<gamma> Y" 
+      by (simp add: impTodis)
     have "F \<rightarrow>\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B G" using Ax by simp
     then have "F \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<rightarrow>\<^sub>B G" using ImpT ImpB MP commAnd by blast
     then have "\<psi> X \<turnstile>\<^sub>B (F \<rightarrow>\<^sub>B G) \<rightarrow>\<^sub>B G" using MP \<open>\<psi> X \<turnstile>\<^sub>B F\<close> by blast
@@ -363,19 +372,20 @@ next
       using Ax ConjI MP Top \<open>\<top>\<^sub>B \<and>\<^sub>B \<psi> X \<turnstile>\<^sub>B \<gamma> Y\<close> by blast
     thus ?case by simp
   qed  
-
 next
   case (nilL_sym X Y)
   then show ?case 
-    by (metis ConjE2 Consecution.inject MP Valid.elims(2) Valid.elims(3) \<psi>.simps(4))
+    using ConjE2 MP by fastforce
 next
 case (nilR X Y)
   then show ?case 
-  proof -
-    have "\<forall>b. b \<or>\<^sub>B \<bottom>\<^sub>B \<turnstile>\<^sub>B b"
-      using Ax Bot DisjE by presburger
-    then show ?thesis
-      using MP Valid.simps \<gamma>.simps(2) \<gamma>.simps(4) nilR.IH by presburger
+  proof-
+    have "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<bottom>\<^sub>B" using nilR.IH by auto
+    have "\<gamma> Y \<turnstile>\<^sub>B \<gamma> Y" using Ax by simp
+    have "\<bottom>\<^sub>B \<turnstile>\<^sub>B \<gamma> Y" using Bot by simp
+    then have "\<gamma> Y \<or>\<^sub>B \<bottom>\<^sub>B \<turnstile>\<^sub>B \<gamma> Y" using \<open>\<gamma> Y \<turnstile>\<^sub>B \<gamma> Y\<close> DisjE by simp
+    have  " \<psi> X \<turnstile>\<^sub>B \<gamma> Y" using \<open>\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<or>\<^sub>B \<bottom>\<^sub>B\<close> \<open>\<gamma> Y \<or>\<^sub>B \<bottom>\<^sub>B \<turnstile>\<^sub>B \<gamma> Y\<close> MP by blast
+    thus ?case by simp
   qed
 next
   case (nilR_sym X Y)
@@ -383,20 +393,20 @@ next
     by (simp add: DisjI1 MP)
 next
   case (AAL W X Y Z)
-  then show ?case 
-    sorry
+  then show ?case apply simp
+    using MP assocAnd2 by blast
 next
   case (AAL_sym W X Y Z)
   then show ?case 
-    sorry
+    using MP assocAnd1 by fastforce
 next 
   case (AAR W X Y Z)
-  then show ?case 
-    sorry
+  then show ?case apply simp
+    using MP assocOr2 by blast
 next
   case (AAR_sym W X Y Z)
   then show ?case 
-    sorry
+    by (simp add: MP assocOr1)
 next
   case (WkL X Z Y)
   then show ?case 
@@ -447,8 +457,23 @@ next
   qed
 next
   case (impMultL X F G Y)
-  then show ?case 
-    sorry 
+  then show ?case apply simp
+  proof -
+    have "\<psi> X \<turnstile>\<^sub>B F" using impMultL.IH by auto
+    have "F \<rightarrow>\<^emph>\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>\<^emph>\<^sub>B G " using Ax by simp 
+    then have "F \<turnstile>\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<rightarrow>\<^emph>\<^sub>B G" 
+      using Comm ImpstarB ImpstarT MP by blast
+    then have "\<psi> X \<turnstile>\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<rightarrow>\<^emph>\<^sub>B G" using \<open>\<psi> X \<turnstile>\<^sub>B F\<close> MP 
+      by blast
+    then have "\<psi> X *\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>B G" 
+      by (simp add: ImpstarB)
+    have "G \<turnstile>\<^sub>B \<gamma> Y" using impMultL.IH by auto
+    then have "\<psi> X *\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>B \<gamma> Y"  using  \<open>\<psi> X *\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>B G\<close> MP by blast
+    then have "F \<rightarrow>\<^emph>\<^sub>B G \<turnstile>\<^sub>B \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y" 
+      using Comm ImpstarT MP by blast
+    then show " \<psi> X \<turnstile>\<^sub>B F \<Longrightarrow> G \<turnstile>\<^sub>B \<gamma> Y \<Longrightarrow> F \<rightarrow>\<^emph>\<^sub>B G \<turnstile>\<^sub>B \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y" 
+      by blast
+  qed
 next
   case TopMultR
   then show ?case 
@@ -511,9 +536,6 @@ next
     thus ?case by simp
   qed
 qed
-
-
-
 
 
 
