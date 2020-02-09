@@ -541,136 +541,32 @@ qed
 
 section "display proof"
 
+subsection"display Antecedent"
+
+
+
+lemma  "(pos (Inl Z) (Inl X) \<longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))) \<and> (neg (Inl Z) (Inr Y) \<longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
+  apply(rule pos_neg.induct)
+
+lemma  "(pos (Inl Z) (Inl X) \<Longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))" and "(neg (Inl Z) (Inr Y) \<Longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
+   apply (induction X and Y)
+
+
 lemma displayAnt : "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))"
   apply simp
-proof-
-  have "pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))" and "neg (Inl Z) (Inr Y) \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))" 
-  proof (induction X and Y)
-  case (formulaA x)
-  then show ?case 
-  proof-
-    have "pos (Inl Z) (Inl (formulaA x))" 
-      by (simp add: formulaA.prems)
-    then have "Z = formulaA x" 
-      using pos.cases by auto
-    thus ?case 
-      using display_refl by blast
-  qed
-next
-  case AddNilA
-  then show ?case
-  proof-
-    have "pos (Inl Z) (Inl \<emptyset>\<^sub>A)" 
-      by (simp add: AddNilA.prems)
-    then have "Z = \<emptyset>\<^sub>A" 
-      using pos.cases by fastforce
-    thus ?case
-      using display_refl by auto
-  qed
-next
-  case (SharpA x)
-  then show ?case  
-    sorry
-next
-  case (SemiColonA x1 x2)
-  then show ?case sorry
-next
-  case MultNilA
-  then show ?case 
-  proof - 
-  have "Z = \<oslash>" 
-    using MultNilA.prems pos.cases by fastforce
-  thus ?case 
-    using display_refl by blast
-  qed
-next
-  case (CommaA x1 x2)
-  then show ?case sorry
-next
-  case (formula x)
-  then show ?case 
-  proof -
-    have "Z = \<sharp>\<^sub>A (formula x)" 
-      using formula.prems neg.cases by force
-    thus ?case 
-      using positulatesCL5 by blast
-  qed
-next
-  case AddNil
-  then show ?case 
-  proof -
-    have "Z = \<sharp>\<^sub>A \<emptyset>" 
-      using AddNil.prems neg.cases by fastforce
-    thus ?case
-      using positulatesCL5 by blast
-  qed
-next
-  case (Sharp x)
-  then show ?case 
-    sorry
-next
-  case (SemiColon x1 x2)
-  then show ?case sorry
-next
-  case (DotArrow x1 x2)
-  then show ?case sorry
-qed
-  oops
+proof (rule pos_neg.induct)
 
+
+
+
+
+subsection"display Consequent"
 lemma displayCon : "con_part (Inr Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (W \<turnstile>\<^sub>C Z))" 
   apply simp
+  
 proof -
   have "neg (Inr Z) (Inl X) \<Longrightarrow> \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (W \<turnstile>\<^sub>C Z)" and "pos (Inr Z) (Inr Y) \<Longrightarrow> \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (W \<turnstile>\<^sub>C Z)"
-  proof(induction X and Y)
-case (formulaA x)
-  then show ?case 
-  proof -
-    have "neg (Inr Z) (Inl (formulaA x))" 
-      by (simp add: formulaA.prems)
-    then have "Z = \<sharp>(formulaA x)" 
-      using neg.cases by fastforce
-    thus ?case 
-      using positulatesCL5 by blast
-  qed
-next
-  case AddNilA
-  then show ?case 
-  proof-
-have "neg (Inr Z) (Inl \<emptyset>\<^sub>A)" 
-  by (simp add: AddNilA.prems)
-    then have "Z = \<sharp>\<emptyset>\<^sub>A" 
-      using neg.cases by fastforce
-    thus ?case 
-      using positulatesCL5 by blast
-  qed
-next
-  case (SharpA x)
-  then show ?case
-    sorry
-next
-  case (SemiColonA x1 x2)
-  then show ?case sorry
-next
-  case MultNilA
-  then show ?case sorry
-next
-  case (CommaA x1 x2)
-  then show ?case sorry
-next
-  case (formula x)
-  then show ?case sorry
-next
-  case AddNil
-  then show ?case sorry
-next
-  case (Sharp x)
-  then show ?case sorry
-next
-  case (SemiColon x1 x2)
-  then show ?case sorry
-next
-  case (DotArrow x1 x2)
-  then show ?case sorry
-qed
-  oops
+  proof(induction rule: pos_neg.induct)
+    oops
+
 end

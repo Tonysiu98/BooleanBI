@@ -160,8 +160,6 @@ and neg :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
 where
 (*any structure is positive to itself*)
 "pos X X" |
-"pos (Inl X) (Inl X)"|
-"pos (Inr X) (Inr X)"|
 (*Antecedent part pos*)
 "neg (Inl Z) (Inr X) \<Longrightarrow> pos (Inl Z) (Inl (\<sharp>\<^sub>A X))"|
 "pos (Inl Z) (Inl X1) \<Longrightarrow> pos (Inl Z) (Inl (X1 ;\<^sub>A X2))"|
@@ -187,7 +185,7 @@ where
 "pos (Inr Z) (Inl X1) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"|
 "neg (Inr Z) (Inr X2) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"
 
-
+print_statement pos_neg.induct
 
 primrec ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
