@@ -6,7 +6,7 @@ text\<open>This Isabelle file is for logging purpose and practice\<close>
 
 
 section "Practice proof"
-
+(*
 typedef three ="{0::nat,1,2}"
   apply(rule_tac x = 0 in exI)
   by simp
@@ -23,7 +23,7 @@ lemma three_cases : "\<lbrakk>Y A ; Y B; Y C\<rbrakk> \<Longrightarrow> Y x"
   apply auto
   apply (auto simp add: A_def B_def C_def)
   done
-
+*)
 section "logging"
 
 (* This is the initial definition of Valid. The problem with this definition is  (Consecution X Y) 
@@ -154,7 +154,7 @@ Just as there are datatypes defined by mutual recursion, there are sets defined
 by mutual induction. As a trivial example we consider the even and odd
 natural numbers:
 \<close>
-
+(*
 inductive_set
   Even :: "nat set" and
   Odd  :: "nat set"
@@ -163,21 +163,11 @@ where
 | EvenI: "n \<in> Odd \<Longrightarrow> Suc n \<in> Even"
 | OddI:  "n \<in> Even \<Longrightarrow> Suc n \<in> Odd"
 
-text\<open>\noindent
-The mutually inductive definition of multiple sets is no different from
-that of a single set, except for induction: just as for mutually recursive
-datatypes, induction needs to involve all the simultaneously defined sets. In
-the above case, the induction rule is called @{thm[source]Even_Odd.induct}
-(simply concatenate the names of the sets involved) and has the conclusion
-@{text[display]"(?x \<in> Even \<longrightarrow> ?P ?x) \<and> (?y \<in> Odd \<longrightarrow> ?Q ?y)"}
-If we want to prove that all even numbers are divisible by two, we have to
-generalize the statement as follows:
-\<close>
+
+
 
 lemma "(m \<in> Even \<longrightarrow> 2 dvd m) \<and> (n \<in> Odd \<longrightarrow> 2 dvd (Suc n))"
-
 apply(rule Even_Odd.induct)
-
 (*<*)
   apply simp
  apply simp
@@ -188,7 +178,7 @@ apply simp
 done
 (*>*)
 
-
+*)
 
 lemma  "A \<longrightarrow> B \<Longrightarrow> \<not>A \<or> B"
 proof -
@@ -258,6 +248,23 @@ text \<open> We then define logical and Structural rules for our display calculu
 to show that the consecution is provable. 
 Again we use an inductive definition for proving our future theorem\<close>
 
+
+inductive Even :: "nat \<Rightarrow> bool" where
+  zero: "Even 0"
+| double: "Even (2 * n)" if "Even n" for n
+
+thm Even.induct
+print_statement Even.induct
+
+lemma "Even n \<Longrightarrow>  2 dvd n"
+proof (induct rule: Even.induct)
+case zero
+then show ?case by auto
+next
+  case (double n)
+  then show ?case
+    by simp
+qed
 
 
 

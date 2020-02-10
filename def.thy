@@ -112,6 +112,7 @@ display_trans :"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C'' 
 
 
 inductive Provable :: "Consecution \<Rightarrow>bool" ("\<P>") where
+
 (*Logical Rules For DL_CL*)
 BotL: "\<P> ((formulaA \<bottom>\<^sub>B) \<turnstile>\<^sub>C X)"|
 BotR: "\<P> (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C formula \<bottom>\<^sub>B)"|
@@ -160,8 +161,6 @@ and neg :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
 where
 (*any structure is positive to itself*)
 "pos X X" |
-"pos (Inl X) (Inl X)"|
-"pos (Inr X) (Inr X)"|
 (*Antecedent part pos*)
 "neg (Inl Z) (Inr X) \<Longrightarrow> pos (Inl Z) (Inl (\<sharp>\<^sub>A X))"|
 "pos (Inl Z) (Inl X1) \<Longrightarrow> pos (Inl Z) (Inl (X1 ;\<^sub>A X2))"|
@@ -186,8 +185,6 @@ where
 "neg (Inr Z) (Inr X2) \<Longrightarrow> neg (Inr Z) (Inr (X1 ; X2))"|
 "pos (Inr Z) (Inl X1) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"|
 "neg (Inr Z) (Inr X2) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"
-
-
 
 primrec ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"

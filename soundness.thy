@@ -1,7 +1,7 @@
 theory proofs
   imports Main def
 begin
-section"Soundness and Completeness"
+section"Soundness"
 
 section"shortcut lemmas"
 
@@ -543,30 +543,159 @@ section "display proof"
 
 subsection"display Antecedent"
 
+lemma "Z = X \<Longrightarrow> pos Z X" 
+  by (simp add: pos_neg.intros(1))
 
 
-lemma  "(pos (Inl Z) (Inl X) \<longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))) \<and> (neg (Inl Z) (Inr Y) \<longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
-  apply(rule pos_neg.induct)
+lemma  
+  shows "pos (Inl X1) (Inl X1) \<Longrightarrow> pos (Inl X1) (Inl (X1 ;\<^sub>A X2)) \<Longrightarrow> \<exists>W. (X1 ;\<^sub>A X2 \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (X1 \<turnstile>\<^sub>C W)"
+proof -
+  have "pos (Inl X1) (Inl X1)" 
+    by (simp add: pos_neg.intros(1))
+  then have  "pos (Inl X1) (Inl (X1 ;\<^sub>A X2))" 
+    by (simp add: pos_neg.intros(3))
+  then show "\<exists>W. (X1 ;\<^sub>A X2 \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (X1 \<turnstile>\<^sub>C W)" 
+    using positulatesCL1 by blast
+qed
 
+
+lemma  "pos (Inl Z) (Inl X) \<Longrightarrow> \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)" and " neg (Inl Z) (Inr Y) \<Longrightarrow> \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)"
+proof(induct pos "Inl Z" "Inl X" and neg "Inl Z" "Inr Y" rule: pos_neg.induct)
+  oops
 lemma  "(pos (Inl Z) (Inl X) \<Longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))" and "(neg (Inl Z) (Inr Y) \<Longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
-   apply (induction X and Y)
+proof (induction X and Y)
+  oops
 
 
 lemma displayAnt : "ant_part (Inl Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))"
   apply simp
 proof (rule pos_neg.induct)
-
-
-
+  oops
+  sorry
 
 
 subsection"display Consequent"
 lemma displayCon : "con_part (Inr Z) (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (W \<turnstile>\<^sub>C Z))" 
   apply simp
-  
-proof -
-  have "neg (Inr Z) (Inl X) \<Longrightarrow> \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (W \<turnstile>\<^sub>C Z)" and "pos (Inr Z) (Inr Y) \<Longrightarrow> \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (W \<turnstile>\<^sub>C Z)"
-  proof(induction rule: pos_neg.induct)
-    oops
+  sorry
+
+section "Identity proof"
+lemma "\<P>(formulaA F \<turnstile>\<^sub>C formula F)"
+proof(induction F)
+case Truth
+  then show ?case
+    by (simp add: TopR)
+next
+case Falsity
+  then show ?case 
+    by (simp add: BotL)
+next
+  case Mfalsity
+  then show ?case
+    by (simp add: TopMultL TopMultR)
+next
+  case (Atom x)
+  then show ?case
+    sorry
+next
+  case (Neg F)
+  then show ?case sorry
+next
+  case (Con F1 F2)
+  then show ?case sorry
+next
+case (MCon F1 F2)
+then show ?case sorry
+next
+  case (Dis F1 F2)
+  then show ?case sorry
+next
+case (Imp F1 F2)
+then show ?case sorry
+next
+case (Mimp F1 F2)
+  then show ?case sorry
+qed
+
+lemma \<psi>L : "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C Y)"
+  sorry
+
+
+
+theorem completeness :"Valid(X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)"
+  apply simp
+proof(induction rule:turnstile_BBI.induct)
+case (Id atom)
+  then show ?case sorry
+next
+  case (Ax F)
+  then show ?case sorry
+next
+  case (Top F)
+  then show ?case sorry
+next
+  case (Bot F)
+then show ?case sorry
+next
+case (ImpT F G H)
+  then show ?case sorry
+next
+  case (ImpB F G H)
+  then show ?case sorry
+next
+  case (MP F G H)
+  then show ?case sorry
+next
+  case (Notl F)
+  then show ?case sorry
+next
+  case (Notr F)
+  then show ?case sorry
+next
+  case (Notnot F)
+  then show ?case sorry
+next
+  case (ConjI F G H)
+  then show ?case sorry
+next
+  case (DisjE F H G)
+  then show ?case sorry
+next
+  case (ConjE1 G1 G2)
+  then show ?case sorry
+next
+  case (ConjE2 G1 G2)
+  then show ?case sorry
+next
+  case (DisjI1 G1 G2)
+  then show ?case sorry
+next
+  case (DisjI2 G2 G1)
+  then show ?case sorry
+next
+  case (Topl F)
+  then show ?case sorry
+next
+  case (Topr F)
+  then show ?case sorry
+next
+  case (ImpstarT F G H)
+  then show ?case sorry
+next
+  case (ImpstarB F G H)
+  then show ?case sorry
+next
+  case (Assocl F G H)
+  then show ?case sorry
+next
+  case (Assocr F G H)
+  then show ?case sorry
+next
+  case (Comm F G)
+  then show ?case sorry
+next
+  case (ConjIstar F1 G1 F2 G2)
+  then show ?case sorry
+qed
 
 end

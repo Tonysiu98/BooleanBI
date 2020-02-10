@@ -1,4 +1,7 @@
 DisplayCalculusBBI.thy~
 Scratch.thy~
 def.thy~
-proof.thy~
+soundness.thy~
+test.thy~
+.vscode
+
