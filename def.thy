@@ -186,6 +186,10 @@ where
 "pos (Inr Z) (Inl X1) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"|
 "neg (Inr Z) (Inr X2) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"
 
+thm pos_neg.induct
+thm pos_neg.inducts
+
+
 primrec ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
 "ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
 
