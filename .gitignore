@@ -5,3 +5,5 @@ soundness.thy~
 test.thy~
 .vscode
 completeness.thy~
+display.thy~
+

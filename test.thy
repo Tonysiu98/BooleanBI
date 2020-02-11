@@ -2,20 +2,29 @@ theory test
   imports Main def
 begin
 
+lemma  "pos (Inl Z) (Inl X) \<Longrightarrow> E Z X" 
+      and
+       "neg (Inl Z) (Inr Y) \<Longrightarrow> Q Z Y"
+proof (induct rule:pos_neg.inducts) print_cases
+  oops
 
 inductive
-    pos :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
-and neg:: "Structure \<Rightarrow> Structure \<Rightarrow>  bool"
+    pos :: "'a \<Rightarrow> 'a \<Rightarrow> bool"
+and neg:: "'a \<Rightarrow> 'a \<Rightarrow> bool"
 where
-  "X = Y \<Longrightarrow> pos X Y"|
- "pos (Inl X) (Inl Y) \<Longrightarrow> neg (Inl X) (Inr(\<sharp>Y))"
+  "X = Y \<Longrightarrow> pos X Y"
+| "pos X Y \<Longrightarrow> neg X Y"
 
 lemma
-  shows "pos Z X \<Longrightarrow> \<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))" and "neg (Inl Z) (Inr Y) \<Longrightarrow>\<exists>W.((X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))" 
-proof (induct Z X and Z Y rule: pos_neg.inducts)
+  fixes A B C D :: "nat"
+  shows "pos A B \<Longrightarrow> Q A B" and "neg C D \<Longrightarrow>E C D"
+proof (induct rule: pos_neg.inducts) print_cases
+  oops
 
-  print_state
-
-
+lemma "A \<or> B \<Longrightarrow> C"
+proof -
+  have "A \<Longrightarrow> C" and "B \<Longrightarrow> C" sorry
+  then show "A \<or> B \<Longrightarrow> C" by blast
+qed
 
 end

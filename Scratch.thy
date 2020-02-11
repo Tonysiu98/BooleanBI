@@ -154,7 +154,7 @@ Just as there are datatypes defined by mutual recursion, there are sets defined
 by mutual induction. As a trivial example we consider the even and odd
 natural numbers:
 \<close>
-(*
+
 inductive_set
   Even :: "nat set" and
   Odd  :: "nat set"
@@ -166,8 +166,21 @@ where
 
 
 
-lemma "(m \<in> Even \<longrightarrow> 2 dvd m) \<and> (n \<in> Odd \<longrightarrow> 2 dvd (Suc n))"
-apply(rule Even_Odd.induct)
+lemma "(m \<in> Even \<Longrightarrow> 2 dvd m) "and " (n \<in> Odd \<Longrightarrow> 2 dvd (Suc n))"
+proof(induct rule: Even_Odd.inducts)print_cases
+case zero
+then show ?case by simp
+next
+  case (EvenI n)
+  then show ?case 
+    by blast
+next
+  case (OddI n)
+  then show ?case
+    using even_Suc_Suc_iff by blast
+qed 
+
+(*
 (*<*)
   apply simp
  apply simp
@@ -248,7 +261,7 @@ text \<open> We then define logical and Structural rules for our display calculu
 to show that the consecution is provable. 
 Again we use an inductive definition for proving our future theorem\<close>
 
-
+(*
 inductive Even :: "nat \<Rightarrow> bool" where
   zero: "Even 0"
 | double: "Even (2 * n)" if "Even n" for n
@@ -265,7 +278,7 @@ next
   then show ?case
     by simp
 qed
-
+*)
 
 
 end
