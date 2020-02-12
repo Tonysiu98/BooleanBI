@@ -160,7 +160,7 @@ inductive pos :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
 and neg :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
 where
 (*any structure is positive to itself*)
-"pos (Inl Z)(Inl X)" if "Z = X" for "Z" |
+"pos (Inl X)(Inl X)" |
 "pos (Inr X)(Inr X)"|
 (*Antecedent part pos*)
 "neg (Inl Z) (Inr X) \<Longrightarrow> pos (Inl Z) (Inl (\<sharp>\<^sub>A X))"|

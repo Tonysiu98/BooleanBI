@@ -22,7 +22,7 @@ case (1 Z X)
     then show ?case using \<open>Z = X\<close> sorry
     oops 
    *)
-   
+
 next
 case (2 X)
 then show ?case sorry
