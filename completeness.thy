@@ -3,16 +3,22 @@ theory completeness
 begin
 
 
+(*shortcut lemma*)
+
+
 lemma identity: "\<P>(formulaA F \<turnstile>\<^sub>C formula F)"
 proof(induction F)
 case Truth
-then show ?case sorry
+then show ?case 
+  by (simp add: TopR)
 next
 case Falsity
-  then show ?case sorry
+  then show ?case 
+    by (simp add: BotL)
 next
-  case Mfalsity
-  then show ?case sorry
+  case MTruth
+  then show ?case 
+    by (simp add: TopMultL TopMultR)
 next
   case (Atom x)
   then show ?case sorry
@@ -37,16 +43,54 @@ next
 qed
 
 
-lemma \<psi>L: "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C Y)"
-  sorry
+lemma \<psi>L: "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C Y)" and \<gamma>R : "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C formula (\<gamma> Y))"
+proof(induction X and Y)
+case (formulaA x)
+then show ?case
+  by auto
+next
+  case AddNilA
+  then show ?case
+    by (simp add: TopL)
+next
+  case (SharpA x)
+  then show ?case sorry
+next
+  case (SemiColonA x1 x2)
+  then show ?case sorry
+next
+  case MultNilA
+  then show ?case sorry
+next
+  case (CommaA x1 x2)
+  then show ?case sorry
+next
+  case (formula x)
+  then show ?case sorry
+next
+  case AddNil
+  then show ?case sorry
+next
+  case (Sharp x)
+  then show ?case sorry
+next
+  case (SemiColon x1 x2)
+  then show ?case sorry
+next
+  case (DotArrow x1 x2)
+  then show ?case sorry
+qed
+
 
 lemma \<psi>R: "\<P>(X \<turnstile>\<^sub>C formula (\<psi> X))" and  \<gamma>Y : "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
 proof(induction X and Y)
 case (formulaA x)
-  then show ?case sorry
+  then show ?case 
+    by (simp add: identity)
 next
 case AddNilA
-  then show ?case sorry
+  then show ?case 
+    by (simp add: TopR)
 next
 case (SharpA x)
 then show ?case sorry
@@ -76,13 +120,7 @@ next
   then show ?case sorry
 qed
 
-(*
-lemma \<gamma>Y : "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
-  sorry
-*)
 
-lemma \<gamma>R : "\<P>(Y \<turnstile>\<^sub>C X) \<Longrightarrow> \<P>(Y \<turnstile>\<^sub>C formula (\<gamma> X))"
-  sorry
 
 
 theorem Completeness: "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)"

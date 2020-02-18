@@ -8,7 +8,7 @@ datatype atom = P nat
 datatype BBI_form = 
   Truth                     ("\<top>\<^sub>B")
   | Falsity                 ("\<bottom>\<^sub>B")
-  | Mfalsity                ("\<top>\<^sup>*\<^sub>B")
+  | MTruth                  ("\<top>\<^sup>*\<^sub>B")
   | Atom atom
   | Neg BBI_form            ("\<not>\<^sub>B _" 101)
   | Con BBI_form BBI_form   (infix "\<and>\<^sub>B" 101)
