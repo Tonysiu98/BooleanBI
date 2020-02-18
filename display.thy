@@ -86,7 +86,7 @@ next
 next
   case (22 Z X2 X1)
   then show ?case sorry
-qed print_cases
+oops
 
 lemma  "(pos (Inl Z) (Inl X) \<longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W))) \<and>
        (neg (Inl Z) (Inr Y) \<longrightarrow> (\<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (Z \<turnstile>\<^sub>C W)))"
