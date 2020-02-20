@@ -528,13 +528,52 @@ then show ?case
   using Assocl MP by fastforce
 next
   case (cut X F Y)
-  then show ?case
+  then show ?case 
   proof -
     have "\<psi> X \<turnstile>\<^sub>B F" and "F \<turnstile>\<^sub>B \<gamma> Y" using cut.IH by auto
     then have "\<psi> X \<turnstile>\<^sub>B \<gamma> Y" using MP 
       by blast
     thus ?case by simp
   qed
+next 
+  case (equiv X' Y' X Y)
+  then show ?case 
+  proof(induction rule:displayEquiv.induct)
+    case (positulatesCL1 X Y Z)
+then show ?case sorry
+next
+  case (positulatesCL2 X Y Z)
+  then show ?case sorry
+next
+  case (positulatesCL3 X Y Z)
+  then show ?case sorry
+next
+  case (positulatesCL4 X Y Z)
+  then show ?case sorry
+next
+  case (positulatesCL5 X Y)
+  then show ?case sorry
+next
+  case (positulatesCL6 Y X)
+  then show ?case sorry
+next
+  case (positulatesCL7 X Y Z)
+  then show ?case sorry
+next
+  case (positulatesCL8 X Y Z)
+  then show ?case sorry
+next
+  case (display_refl C)
+  then show ?case
+    by auto
+next
+  case (display_symm C C')
+  then show ?case sorry
+next
+  case (display_trans C C' C'')
+  then show ?case 
+    by (metis Provable.equiv Valid.cases)
+qed
 qed
 
 end

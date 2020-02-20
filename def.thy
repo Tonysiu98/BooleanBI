@@ -110,9 +110,9 @@ display_refl :"C \<equiv>\<^sub>D C"|
 display_symm :"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C"|
 display_trans :"C \<equiv>\<^sub>D C' \<Longrightarrow> C' \<equiv>\<^sub>D C'' \<Longrightarrow> C \<equiv>\<^sub>D C''"
 
+section"Structure Axioms"
 
 inductive Provable :: "Consecution \<Rightarrow>bool" ("\<P>") where
-
 (*Logical Rules For DL_CL*)
 BotL: "\<P> ((formulaA \<bottom>\<^sub>B) \<turnstile>\<^sub>C X)"|
 BotR: "\<P> (X \<turnstile>\<^sub>C \<emptyset>) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C formula \<bottom>\<^sub>B)"|
@@ -152,50 +152,51 @@ nilMultL_sym: "\<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (\<oslash>
 MAL: "\<P> (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z)"|
 MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrightarrow> \<P> (W ,\<^sub>A (X ,\<^sub>A Y) \<turnstile>\<^sub>C Z)"|
 (*Cut-elimination*)
-cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"
+cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"|
+(*display equivalence*)
+equiv: "\<P>(X' \<turnstile>\<^sub>C Y') \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)" if "(X' \<turnstile>\<^sub>C Y') \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y)"
 
-type_synonym Structure = "Antecedent_Structure + Consequent_Structure"
-
-inductive pos :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
-and neg :: "Structure \<Rightarrow> Structure \<Rightarrow> bool"
-where
-(*any structure is positive to itself*)
-"pos (Inl X)(Inl X)" |
-"pos (Inr X)(Inr X)"|
-(*Antecedent part pos*)
-"neg (Inl Z) (Inr X) \<Longrightarrow> pos (Inl Z) (Inl (\<sharp>\<^sub>A X))"|
-"pos (Inl Z) (Inl X1) \<Longrightarrow> pos (Inl Z) (Inl (X1 ;\<^sub>A X2))"|
-"pos (Inl Z) (Inl X2) \<Longrightarrow> pos (Inl Z) (Inl (X1 ;\<^sub>A X2))"|
-"pos (Inl Z) (Inl X1) \<Longrightarrow> pos (Inl Z) (Inl (X1 ,\<^sub>A X2))"|
-"pos (Inl Z) (Inl X2) \<Longrightarrow> pos (Inl Z) (Inl (X1 ,\<^sub>A X2))"|
-(*Antecedent part neg*)
-"pos (Inl Z) (Inr X) \<Longrightarrow> neg (Inl Z) (Inl (\<sharp>\<^sub>A X))"|
-"neg (Inl Z) (Inl X1) \<Longrightarrow> neg (Inl Z) (Inl (X1 ;\<^sub>A X2))"|
-"neg (Inl Z) (Inl X2) \<Longrightarrow> neg (Inl Z) (Inl (X1 ;\<^sub>A X2))"|
-"neg (Inl Z) (Inl X1) \<Longrightarrow> neg (Inl Z) (Inl (X1 ,\<^sub>A X2))"|
-"neg (Inl Z) (Inl X2) \<Longrightarrow> neg (Inl Z) (Inl (X1 ,\<^sub>A X2))"|
-(*Consequent part pos*)
-"neg (Inr Z) (Inl X) \<Longrightarrow> pos (Inr Z) (Inr (\<sharp> X))"|
-"pos (Inr Z) (Inr X1) \<Longrightarrow> pos (Inr Z) (Inr (X1 ; X2))"|
-"pos (Inr Z) (Inr X2) \<Longrightarrow> pos (Inr Z) (Inr (X1 ; X2))"|
-"neg (Inr Z) (Inl X1) \<Longrightarrow> pos (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"|
-"pos (Inr Z) (Inr X2) \<Longrightarrow> pos (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"|
-(*Consequent part neg*)
-"pos (Inr Z) (Inl X) \<Longrightarrow> neg (Inr Z) (Inr (\<sharp> X))"|
-"neg (Inr Z) (Inr X1) \<Longrightarrow> neg (Inr Z) (Inr (X1 ; X2))"|
-"neg (Inr Z) (Inr X2) \<Longrightarrow> neg (Inr Z) (Inr (X1 ; X2))"|
-"pos (Inr Z) (Inl X1) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"|
-"neg (Inr Z) (Inr X2) \<Longrightarrow> neg (Inr Z) (Inr (X1 \<rightarrow>\<circ> X2))"
-
-thm pos_neg.induct
-thm pos_neg.inducts
+section"positive and negative structure"
+inductive pos_ant :: "Antecedent_Structure \<Rightarrow> Antecedent_Structure \<Rightarrow> bool" and    
+          neg_con :: "Antecedent_Structure \<Rightarrow> Consequent_Structure \<Rightarrow> bool" where
+(*pos part*)
+"pos_ant X X"|
+"neg_con Z X \<Longrightarrow> pos_ant Z (\<sharp>\<^sub>A X)"|
+"pos_ant Z X1 \<Longrightarrow> pos_ant Z (X1 ;\<^sub>A X2)"|
+"pos_ant Z X2 \<Longrightarrow> pos_ant Z (X1 ;\<^sub>A X2)"|
+"pos_ant Z X1 \<Longrightarrow> pos_ant Z (X1 ,\<^sub>A X2)"|
+"pos_ant Z X2 \<Longrightarrow> pos_ant Z (X1 ,\<^sub>A X2)"|
+(*neg part*)
+"pos_ant Z X  \<Longrightarrow> neg_con Z (\<sharp> X)"|
+"neg_con Z X1 \<Longrightarrow> neg_con Z (X1 ; X2)"|
+"neg_con Z X2 \<Longrightarrow> neg_con Z (X1 ; X2)"|
+"pos_ant Z X1 \<Longrightarrow> neg_con Z (X1 \<rightarrow>\<circ> X2)"|
+"neg_con Z X2 \<Longrightarrow> neg_con Z (X1 \<rightarrow>\<circ> X2)"
 
 
-primrec ant_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
-"ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos Z (Inl X)) \<or> (neg Z (Inr Y)))"
+inductive pos_con :: "Consequent_Structure \<Rightarrow> Consequent_Structure \<Rightarrow> bool" and    
+          neg_ant :: "Consequent_Structure \<Rightarrow> Antecedent_Structure \<Rightarrow> bool" where
+(*pos part*)
+"pos_con X X"|
+"neg_ant Z X \<Longrightarrow> pos_con Z (\<sharp> X)"|
+"pos_con Z X1 \<Longrightarrow> pos_con Z (X1 ; X2)"|
+"pos_con Z X2 \<Longrightarrow> pos_con Z (X1 ; X2)"|
+"neg_ant Z X1 \<Longrightarrow> pos_con Z (X1 \<rightarrow>\<circ> X2)"|
+"pos_con Z X2 \<Longrightarrow> pos_con Z (X1 \<rightarrow>\<circ> X2)"|
+(*neg part*)
+"pos_con Z X \<Longrightarrow> neg_ant Z (\<sharp>\<^sub>A X)"|
+"neg_ant Z X1 \<Longrightarrow> neg_ant Z (X1 ;\<^sub>A X2)"|
+"neg_ant Z X2 \<Longrightarrow> neg_ant Z (X1 ;\<^sub>A X2)"|
+"neg_ant Z X1 \<Longrightarrow> neg_ant Z (X1 ,\<^sub>A X2)"|
+"neg_ant Z X2 \<Longrightarrow> neg_ant Z (X1 ,\<^sub>A X2)"
 
-primrec con_part :: "Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
-"con_part Z (X \<turnstile>\<^sub>C Y) = ((neg Z (Inl X)) \<or> (pos Z (Inr Y)))"
+
+primrec ant_part :: "Antecedent_Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
+"ant_part Z (X \<turnstile>\<^sub>C Y) = ((pos_ant Z X) \<or> (neg_con Z Y))"
+
+primrec con_part :: "Consequent_Structure \<Rightarrow> Consecution \<Rightarrow> bool" where
+"con_part Z (X \<turnstile>\<^sub>C Y) = ((neg_ant Z  X) \<or> (pos_con Z Y))"
+
 
 
 end
