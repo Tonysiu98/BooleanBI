@@ -211,7 +211,8 @@ next
     by (simp add: TopL)
 next
   case (SharpA x)
-  then show ?case sorry  
+  then show ?case 
+    sorry
 next
   case (SemiColonA x1 x2)
   then show ?case sorry
