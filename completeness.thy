@@ -199,23 +199,43 @@ next
 qed
 qed
 
-lemma \<psi>L: "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C Y)"
-      and \<gamma>R : "\<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C formula (\<gamma> Y))"
+
+lemma \<psi>L: "\<forall>Y. \<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow>  \<forall>Y. \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C Y)"
+      and \<gamma>R : " \<forall>X. \<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow>  \<forall>X. \<P>(X \<turnstile>\<^sub>C formula (\<gamma> Y))"
 proof(induction X and Y)
 case (formulaA x)
 then show ?case
-  by auto
+  using identity by auto
 next
   case AddNilA
   then show ?case
     by (simp add: TopL)
 next
   case (SharpA x)
-  then show ?case 
-    sorry
+  then show ?case
+  proof-
+    have "\<forall>Y. \<P>(\<sharp>\<^sub>A Y \<turnstile>\<^sub>C x) \<Longrightarrow> \<forall>Y. \<P>(\<sharp>\<^sub>A Y \<turnstile>\<^sub>C formula (\<gamma> x))"
+      using SharpA.IH SharpA.prems display_symm equiv positulatesCL5 by blast
+    then have "\<forall>Y. \<P>(\<sharp>\<^sub>A (formula (\<gamma> x)) \<turnstile>\<^sub>C Y )"
+      by (meson SharpA.prems display_symm equiv positulatesCL5 positulatesCL6)
+    hence "\<forall>Y. \<P>((formulaA (\<not>\<^sub>B (\<gamma> x))) \<turnstile>\<^sub>C Y )"
+      by (simp add: notL)
+    hence "\<forall>Y. \<P>(formulaA(\<psi> (\<sharp>\<^sub>A x)) \<turnstile>\<^sub>C Y)"
+      by simp
+    then show ?case 
+      by blast
+  qed
+    
 next
   case (SemiColonA x1 x2)
-  then show ?case sorry
+  then show ?case 
+  proof-
+    note\<open> \<forall>Y. \<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C Y)\<close>
+    have "\<forall>Y. \<P>(x1 \<turnstile>\<^sub>C \<sharp>x2 ; Y)" 
+      using SemiColonA.prems equiv positulatesCL1 by blast
+    then have "\<forall>Y. \<P>(x1 \<turnstile>\<^sub>C \<sharp>x2 ; Y) \<Longrightarrow> \<forall>Y. \<P>(formulaA (\<psi> x1) \<turnstile>\<^sub>C \<sharp>x2 ; Y)" sorry
+    show ?case sorry
+  qed
 next
   case MultNilA
   then show ?case sorry
@@ -238,6 +258,8 @@ next
   case (DotArrow x1 x2)
   then show ?case sorry
 qed
+
+
 
 
 
