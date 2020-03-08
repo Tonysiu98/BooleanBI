@@ -214,7 +214,10 @@ next
   case (SharpA x)
   then show ?case
   proof-
-    have "\<forall>Y. \<P>(\<sharp>\<^sub>A Y \<turnstile>\<^sub>C x) \<Longrightarrow> \<forall>Y. \<P>(\<sharp>\<^sub>A Y \<turnstile>\<^sub>C formula (\<gamma> x))"
+    note\<open>\<forall>Y. \<P> (\<sharp>\<^sub>A x \<turnstile>\<^sub>C Y)\<close>
+    then have "\<forall>Y. \<P>(\<sharp>\<^sub>A Y \<turnstile>\<^sub>C x)"
+      using display_symm equiv positulatesCL5 by blast
+    then have " \<forall>Y. \<P>(\<sharp>\<^sub>A Y \<turnstile>\<^sub>C formula (\<gamma> x))"
       using SharpA.IH SharpA.prems display_symm equiv positulatesCL5 by blast
     then have "\<forall>Y. \<P>(\<sharp>\<^sub>A (formula (\<gamma> x)) \<turnstile>\<^sub>C Y )"
       by (meson SharpA.prems display_symm equiv positulatesCL5 positulatesCL6)
@@ -233,7 +236,7 @@ next
     note\<open> \<forall>Y. \<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C Y)\<close>
     have "\<forall>Y. \<P>(x1 \<turnstile>\<^sub>C \<sharp>x2 ; Y)" 
       using SemiColonA.prems equiv positulatesCL1 by blast
-    then have "\<forall>Y. \<P>(x1 \<turnstile>\<^sub>C \<sharp>x2 ; Y) \<Longrightarrow> \<forall>Y. \<P>(formulaA (\<psi> x1) \<turnstile>\<^sub>C \<sharp>x2 ; Y)" sorry
+    then have "\<P>(x1 \<turnstile>\<^sub>C \<sharp>x2 ; Y) \<Longrightarrow>  \<P>(formulaA (\<psi> x1) \<turnstile>\<^sub>C \<sharp>x2 ; Y)" sorry
     show ?case sorry
   qed
 next
