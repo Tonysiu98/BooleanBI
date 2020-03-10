@@ -233,6 +233,7 @@ qed
 lemma SoundPostulateCL8R : "Valid (Y ,\<^sub>A X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z)"
   using SoundPostulateCL7 SoundPostulateCL8 by blast
 
+lemma displaySymm: "Valid(C)"
 
 
 section"Soundness for logical and structural rules"
@@ -538,14 +539,14 @@ next
 next 
   case (equiv X' Y' X Y)
   then show ?case 
-  proof(induction rule:displayEquiv.induct)
+  proof(induction rule: displayEquiv.induct)
     case (positulatesCL1 X Y Z)
-then show ?case sorry
+    then show ?case sorry
+  next
+    case (positulatesCL2 X Y Z)
+    then show ?case sorry
 next
-  case (positulatesCL2 X Y Z)
-  then show ?case sorry
-next
-  case (positulatesCL3 X Y Z)
+case (positulatesCL3 X Y Z)
   then show ?case sorry
 next
   case (positulatesCL4 X Y Z)
@@ -564,16 +565,22 @@ next
   then show ?case sorry
 next
   case (display_refl C)
-  then show ?case
+  then show ?case 
     by auto
 next
   case (display_symm C C')
   then show ?case sorry
+
 next
   case (display_trans C C' C'')
   then show ?case 
     by (metis Provable.equiv Valid.cases)
 qed
+next 
+  case (id atom)
+  then show ?case 
+    by (simp add: Ax)
 qed
+
 
 end

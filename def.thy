@@ -23,7 +23,6 @@ section "BBI formula Axioms"
 (* Initial attempt of turnstile, this includes both CL and LM*)
 inductive turnstile_BBI :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool" (infix "\<turnstile>\<^sub>B" 55)
   where 
-Id : "Atom atom \<turnstile>\<^sub>B Atom atom"|
 Ax : "F \<turnstile>\<^sub>B F"|
 Top : "F \<turnstile>\<^sub>B \<top>\<^sub>B"|
 Bot : "\<bottom>\<^sub>B \<turnstile>\<^sub>B F"|
@@ -154,7 +153,9 @@ MAL_sym: "\<P> ((W ,\<^sub>A X) ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longrighta
 (*Cut-elimination*)
 cut: "\<P> (X \<turnstile>\<^sub>C (formula F)) \<Longrightarrow> \<P> ((formulaA F) \<turnstile>\<^sub>C Y) \<Longrightarrow>\<P> (X \<turnstile>\<^sub>C Y)"|
 (*display equivalence*)
-equiv: "\<P>(X' \<turnstile>\<^sub>C Y') \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)" if "(X' \<turnstile>\<^sub>C Y') \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y)"
+equiv: "\<P>(X' \<turnstile>\<^sub>C Y') \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)" if "(X' \<turnstile>\<^sub>C Y') \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y)"|
+(*id*)
+id: "\<P>(formulaA (Atom atom) \<turnstile>\<^sub>C formula (Atom atom))"
 
 section"positive and negative structure"
 inductive pos_ant :: "Antecedent_Structure \<Rightarrow> Antecedent_Structure \<Rightarrow> bool" and    
