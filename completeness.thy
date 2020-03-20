@@ -2,6 +2,9 @@ theory completeness
     imports Main def
 begin
 
+
+
+
 lemma identity: "\<P>(formulaA F \<turnstile>\<^sub>C formula F)"
 proof(induction F)
 case Truth
@@ -335,81 +338,26 @@ next
 qed
 
 
-section "Completeness"
 
+section "Completeness"
+(*
 theorem Completeness: "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)"
   apply simp
-proof(induction rule: turnstile_BBI.induct)
-  case (Ax F)
-  then show ?case sorry
-next
-  case (Top F)
-  then show ?case sorry
-next
-  case (Bot F)
-  then show ?case sorry
-next
-  case (ImpT F G H)
-  then show ?case sorry
-next
-  case (ImpB F G H)
-  then show ?case sorry
-next
-  case (MP F G H)
-  then show ?case sorry
-next
-  case (Notl F)
-  then show ?case sorry
-next
-  case (Notr F)
-  then show ?case sorry
-next
-  case (Notnot F)
-  then show ?case sorry
-next
-  case (ConjI F G H)
-  then show ?case sorry
-next
-  case (DisjE F H G)
-  then show ?case sorry
-next
-  case (ConjE1 G1 G2)
-  then show ?case sorry
-next
-  case (ConjE2 G1 G2)
-  then show ?case sorry
-next
-  case (DisjI1 G1 G2)
-  then show ?case sorry
-next
-  case (DisjI2 G2 G1)
-  then show ?case sorry
-next
-  case (Topl F)
-  then show ?case sorry
-next
-  case (Topr F)
-  then show ?case sorry
-next
-  case (ImpstarT F G H)
-  then show ?case sorry
-next
-  case (ImpstarB F G H)
-  then show ?case sorry
-next
-  case (Assocl F G H)
-  then show ?case sorry
-next
-  case (Assocr F G H)
-  then show ?case sorry
-next
-  case (Comm F G)
-  then show ?case sorry
-next
-  case (ConjIstar F1 G1 F2 G2)
-  then show ?case sorry
+proof-
+  have "\<P>(X \<turnstile>\<^sub>C formula(\<psi> X))"
+    by (simp add: \<psi>R)
+  have "\<P>(formulaA(\<psi> X) \<turnstile>\<^sub>C Y)"
+  proof-
+    have "\<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))" sorry
+    have "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
+      by (simp add: \<gamma>Y)
+    note \<open>\<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))\<close>\<open>\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)\<close>
+    thus ?thesis 
+      using cut by blast
+  qed
+  note\<open>\<P>(X \<turnstile>\<^sub>C formula(\<psi> X))\<close> \<open>\<P>(formulaA(\<psi> X) \<turnstile>\<^sub>C Y)\<close>
+  thus ?thesis 
+    using cut by blast
 qed
-
-
-
+*)
 end

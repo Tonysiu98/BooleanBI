@@ -233,7 +233,6 @@ qed
 lemma SoundPostulateCL8R : "Valid (Y ,\<^sub>A X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z)"
   using SoundPostulateCL7 SoundPostulateCL8 by blast
 
-lemma displaySymm: "Valid(C)"
 
 
 section"Soundness for logical and structural rules"
@@ -255,17 +254,16 @@ then show ?case
     have "\<psi> X \<turnstile>\<^sub>B \<gamma> \<emptyset>" 
       using BotR.IH by auto
     hence " \<psi> X \<turnstile>\<^sub>B \<bottom>\<^sub>B" 
-      using Ax  by simp
+      by simp
     thus ?case by simp
   qed
 next
   case (TopL X)
 then show ?case 
 proof-
-  have "\<psi> (formulaA \<bottom>\<^sub>B) \<turnstile>\<^sub>B \<gamma> X" 
-    by (simp add: Bot)
-  thus ?case 
-    using TopL.IH by auto
+  have "\<psi> \<emptyset>\<^sub>A \<turnstile>\<^sub>B \<gamma> X" 
+    using TopL.IH Valid.simps by blast
+  thus ?case by simp
 qed
 next
   case (TopR X)
@@ -281,7 +279,7 @@ next
   proof-
     have "(\<not>\<^sub>B \<gamma> (formula F)) \<turnstile>\<^sub>B \<gamma> X" 
       using notL.IH by auto
-    hence "(\<not>\<^sub>B F) \<turnstile>\<^sub>B \<gamma> X" using Ax by simp
+    hence "(\<not>\<^sub>B F) \<turnstile>\<^sub>B \<gamma> X"  by simp
     thus ?case by simp
     qed
 next
@@ -290,7 +288,7 @@ next
   proof -
     have "\<psi> X \<turnstile>\<^sub>B \<not>\<^sub>B \<psi> (formulaA F )"
       using notR.IH by auto
-    hence "\<psi> X \<turnstile>\<^sub>B \<not>\<^sub>B F" using Ax by simp
+    hence "\<psi> X \<turnstile>\<^sub>B \<not>\<^sub>B F"  by simp
     thus ?case by simp
   qed
 next
