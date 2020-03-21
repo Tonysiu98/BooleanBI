@@ -352,10 +352,29 @@ next
 next
   case (ImpT F G H)
   then show ?case 
-    sorry    
+  proof-
+    note \<open>\<P> (formulaA (F \<and>\<^sub>B G) \<turnstile>\<^sub>C formula H)\<close>
+    hence "\<P> (formulaA (\<psi> (formulaA F ;\<^sub>A formulaA G)) \<turnstile>\<^sub>C formula H)" 
+      by simp
+    hence "\<P> (formulaA F ;\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)" using cut \<psi>R by blast
+    thus ?case 
+      using impR by blast
+  qed
 next
   case (ImpB F G H)
-  then show ?case sorry
+  then show ?case 
+  proof-
+  (* G \<turnstile> G && H \<turnstile> H *)
+    have "\<P>(formulaA (G \<rightarrow>\<^sub>B H) \<turnstile>\<^sub>C \<sharp>(formulaA G) ; formula H)"
+      by (simp add: identity impL)
+    note\<open>\<P>(formulaA (G \<rightarrow>\<^sub>B H) \<turnstile>\<^sub>C \<sharp>(formulaA G) ; formula H)\<close> \<open>\<P> (formulaA F \<turnstile>\<^sub>C formula (G \<rightarrow>\<^sub>B H))\<close>
+    hence "\<P>(formulaA F \<turnstile>\<^sub>C \<sharp>(formulaA G) ; formula H)"
+      using cut by blast
+    hence "\<P>(formulaA F ;\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
+      using equiv positulatesCL1 positulatesCL2 by blast
+    thus ?case 
+      using andL by blast
+  qed
 next
   case (MP F G H)
   then show ?case using cut by blast
@@ -481,10 +500,31 @@ next
   qed
 next
   case (ImpstarT F G H)
-  then show ?case sorry
+  then show ?case 
+  proof-
+    note\<open>\<P> (formulaA (F *\<^sub>B G) \<turnstile>\<^sub>C formula H)\<close>
+    hence "\<P> (formulaA (\<psi> (formulaA F) *\<^sub>B \<psi> (formulaA G)) \<turnstile>\<^sub>C formula H)" 
+      by simp
+    hence "\<P> (formulaA (\<psi> (formulaA F ,\<^sub>A formulaA G)) \<turnstile>\<^sub>C formula H)" 
+      by simp
+    hence "\<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
+      using \<psi>R cut by blast
+    thus ?case
+      using impMultR by blast
+  qed
+  
 next
   case (ImpstarB F G H)
-  then show ?case sorry
+  then show ?case 
+  proof-
+    note \<open>\<P> (formulaA F \<turnstile>\<^sub>C formula (G \<rightarrow>\<^emph>\<^sub>B H))\<close>
+    hence "\<P> (formulaA F \<turnstile>\<^sub>C formulaA G \<rightarrow>\<circ> formula H)" 
+      using cut identity impMultL by blast
+    hence "\<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
+      using display_symm equiv positulatesCL7 by blast
+    thus ?case 
+      by (simp add: andMultL)
+  qed
 next
   case (Assocl F G H)
   then show ?case 
