@@ -4,6 +4,14 @@ begin
 section"Soundness"
 
 section"shortcut lemmas"
+lemma  "\<top>\<^sub>B \<rightarrow>\<^sub>B \<bottom>\<^sub>B \<turnstile>\<^sub>B \<bottom>\<^sub>B" 
+  by (meson ConjI ImpB MP Notl Notr Top)
+
+lemma commOR :"F \<or>\<^sub>B G \<turnstile>\<^sub>B G \<or>\<^sub>B F" 
+  by (simp add: DisjE DisjI1 DisjI2)
+
+lemma commAnd : "F \<and>\<^sub>B G \<turnstile>\<^sub>B G \<and>\<^sub>B F"
+  by (simp add: ConjE1 ConjE2 ConjI)
 
 lemma assocAnd1 : "F \<and>\<^sub>B (G \<and>\<^sub>B H) \<turnstile>\<^sub>B (F \<and>\<^sub>B G) \<and>\<^sub>B H"
   by (meson ConjE1 ConjE2 ConjI MP)
@@ -18,13 +26,7 @@ lemma assocOr2 : "(F \<or>\<^sub>B G) \<or>\<^sub>B H \<turnstile>\<^sub>B F \<o
   by (meson DisjE DisjI1 DisjI2 MP)
 
 lemma NotnotR : "F \<turnstile>\<^sub>B \<not>\<^sub>B \<not>\<^sub>B F"
-  by (meson ConjE1 ConjE2 ConjI ImpB ImpT MP Notl Notr)
-
-lemma commOR :"F \<or>\<^sub>B G \<turnstile>\<^sub>B G \<or>\<^sub>B F" 
-  by (simp add: DisjE DisjI1 DisjI2)
-
-lemma commAnd : "F \<and>\<^sub>B G \<turnstile>\<^sub>B G \<and>\<^sub>B F"
-  by (simp add: ConjE1 ConjE2 ConjI)
+  using ImpB ImpT MP Notl Notr commAnd by blast
 
 lemma disToimp : "(\<not>\<^sub>BF) \<or>\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B G"
 proof
@@ -46,8 +48,7 @@ proof-
     have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B F" by (meson ConjI DisjI1 DisjI2 ImpB MP \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B \<not>\<^sub>B F\<close> disToimp)
     have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B F \<and>\<^sub>B (\<not>\<^sub>B F)" by (simp add: ConjI \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B F\<close> \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B \<not>\<^sub>B F\<close>)
     have "F \<and>\<^sub>B (\<not>\<^sub>B F) \<turnstile>\<^sub>B \<bottom>\<^sub>B" using ImpB MP Notl commAnd by blast
-    then have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B \<bottom>\<^sub>B " 
-      using MP \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B F \<and>\<^sub>B (\<not>\<^sub>B F)\<close> by blast
+    then have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B \<bottom>\<^sub>B " using MP \<open>(\<not>\<^sub>B F \<or>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B F \<and>\<^sub>B (\<not>\<^sub>B F)\<close> by blast
     then have "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<turnstile>\<^sub>B \<top>\<^sub>B \<rightarrow>\<^sub>B \<bottom>\<^sub>B" using Bot MP by blast
     then have  "(\<not>\<^sub>B(F \<or>\<^sub>B (\<not>\<^sub>B F))) \<and>\<^sub>B \<top>\<^sub>B \<turnstile>\<^sub>B \<bottom>\<^sub>B" 
       by (simp add: ImpB)

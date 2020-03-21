@@ -2,9 +2,6 @@ theory completeness
     imports Main def
 begin
 
-
-
-
 lemma identity: "\<P>(formulaA F \<turnstile>\<^sub>C formula F)"
 proof(induction F)
 case Truth
@@ -106,7 +103,7 @@ next
   qed
 qed
 
-lemma \<psi>R: "\<P>(X \<turnstile>\<^sub>C formula (\<psi> X))" and \<gamma>Y : "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
+lemma \<psi>R: "\<P>(X \<turnstile>\<^sub>C formula (\<psi> X))" and \<gamma>L : "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
 proof(induction X and Y)
 case (formulaA x)
   then show ?case 
@@ -340,17 +337,223 @@ qed
 
 
 section "Completeness"
+
+lemma intermediate: "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<Longrightarrow> \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))"
+proof(induction rule: turnstile_BBI.induct)
+case (Ax F)
+  then show ?case 
+    by (simp add: identity)
+next
+  case (Top F)
+  then show ?case using TopR by simp
+next
+  case (Bot F)
+  then show ?case using BotL by simp
+next
+  case (ImpT F G H)
+  then show ?case 
+    sorry    
+next
+  case (ImpB F G H)
+  then show ?case sorry
+next
+  case (MP F G H)
+  then show ?case using cut by blast
+next
+  case (Notl F)
+  then show ?case 
+  proof-
+    have"\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    hence"\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C \<sharp>(formulaA F))" 
+      using equiv positulatesCL5 by blast
+    hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C (formula \<bottom>\<^sub>B) ; \<sharp>(formulaA F))"using WkR by simp
+    hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C  \<sharp>(formulaA F) ; (formula \<bottom>\<^sub>B))" 
+      using equiv positulatesCL3 positulatesCL4 by blast
+    hence "\<P>(\<sharp>\<^sub>A(formula F) ;\<^sub>A formulaA F \<turnstile>\<^sub>C (formula \<bottom>\<^sub>B))" 
+      using display_symm equiv positulatesCL1 by blast
+    hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C formula(F \<rightarrow>\<^sub>B \<bottom>\<^sub>B))" 
+      by (simp add: impR)
+    thus ?case 
+      by (simp add: notL)
+  qed
+next
+  case (Notr F)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    have "\<P>(formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C \<sharp>(formulaA F))"
+      by (simp add: BotL)
+    have "\<P>(formulaA (F \<rightarrow>\<^sub>B \<bottom>\<^sub>B) \<turnstile>\<^sub>C \<sharp>(formulaA F) ; \<sharp>(formulaA F))" 
+      by (simp add: \<open>\<P> (formulaA F \<turnstile>\<^sub>C formula F)\<close> \<open>\<P> (formulaA \<bottom>\<^sub>B \<turnstile>\<^sub>C \<sharp> (formulaA F))\<close> impL)
+    hence "\<P>(formulaA (F \<rightarrow>\<^sub>B \<bottom>\<^sub>B) \<turnstile>\<^sub>C \<sharp>(formulaA F))" using CtrR by blast
+    thus ?case 
+      by (simp add: notR)
+  qed
+next
+  case (Notnot F)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    hence"\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C \<sharp>(formulaA F))" 
+      using equiv positulatesCL5 by blast
+    hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C formula(\<not>\<^sub>B F))" 
+      using notR by simp
+    hence "\<P>(\<sharp>\<^sub>A(formula (\<not>\<^sub>B F)) \<turnstile>\<^sub>C formula F)"
+      by (meson display_symm equiv positulatesCL5 positulatesCL6)
+    thus ?case
+      by (simp add: notL)
+  qed
+next
+  case (ConjI F G H)
+  then show ?case using andR by blast
+next
+  case (DisjE F H G)
+  then show ?case using orL by blast
+next
+  case (ConjE1 F G)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    hence "\<P>((formulaA F) ;\<^sub>A (formulaA G) \<turnstile>\<^sub>C formula F)" 
+      using WkL by blast
+    thus ?case using andL by simp
+  qed
+next
+  case (ConjE2 F G)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA G \<turnstile>\<^sub>C formula G)" using identity by simp
+    hence "\<P>((formulaA G) ;\<^sub>A (formulaA F) \<turnstile>\<^sub>C formula G)" 
+      using WkL by blast
+    hence "\<P>((formulaA F) ;\<^sub>A (formulaA G) \<turnstile>\<^sub>C formula G)" 
+      using equiv positulatesCL1 positulatesCL2 by blast
+    thus ?case 
+      by (simp add: andL)
+  qed
+next
+  case (DisjI1 F G)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    hence "\<P>(formulaA F \<turnstile>\<^sub>C formula G ; formula F)" using WkR by blast
+    hence "\<P>(formulaA F \<turnstile>\<^sub>C formula F ; formula G)"
+      using equiv positulatesCL3 positulatesCL4 by blast
+    thus ?case 
+      by (simp add: orR)
+  qed
+next
+  case (DisjI2 G F)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA G \<turnstile>\<^sub>C formula G)" using identity by simp
+    hence "\<P>(formulaA G \<turnstile>\<^sub>C formula F ; formula G)"
+      by (simp add: WkR)
+    thus ?case
+      by (simp add: orR)
+  qed
+next
+  case (Topl F)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    hence "\<P>(\<oslash> ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula F)"
+      using nilMultL_sym by blast
+    hence "\<P>(\<oslash> \<turnstile>\<^sub>C formulaA F \<rightarrow>\<circ> formula F)" 
+      using equiv positulatesCL7 by blast
+    hence "\<P>(formulaA \<top>\<^sup>*\<^sub>B \<turnstile>\<^sub>C formulaA F \<rightarrow>\<circ> formula F)"
+      using TopMultL by blast
+    hence "\<P>(formulaA F ,\<^sub>A formulaA \<top>\<^sup>*\<^sub>B \<turnstile>\<^sub>C  formula F)" 
+      using equiv positulatesCL8 by blast
+    thus ?case 
+      by (simp add: andMultL)
+  qed
+next
+  case (Topr F)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    hence "\<P>(formulaA F ,\<^sub>A \<oslash> \<turnstile>\<^sub>C formula (F *\<^sub>B \<top>\<^sup>*\<^sub>B))"
+      using TopMultR andMultR by blast
+    hence "\<P>(\<oslash> ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula (F *\<^sub>B \<top>\<^sup>*\<^sub>B))" 
+      using equiv positulatesCL7 positulatesCL8 by blast
+    thus ?case 
+      using nilMultL by blast
+  qed
+next
+  case (ImpstarT F G H)
+  then show ?case sorry
+next
+  case (ImpstarB F G H)
+  then show ?case sorry
+next
+  case (Assocl F G H)
+  then show ?case 
+  proof-
+    have "\<P>(formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula(F *\<^sub>B G))" 
+      by (simp add: andMultR identity)
+    have "\<P>(formulaA H \<turnstile>\<^sub>C formula H)" using identity by simp
+    have "\<P>((formulaA F ,\<^sub>A formulaA G) ,\<^sub>A formulaA H \<turnstile>\<^sub>C formula((F *\<^sub>B G) *\<^sub>B H))"
+      using \<open>\<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula (F *\<^sub>B G))\<close> 
+            \<open>\<P> (formulaA H \<turnstile>\<^sub>C formula H)\<close> andMultR by auto
+    hence "\<P>(formulaA F ,\<^sub>A (formulaA G ,\<^sub>A formulaA H) \<turnstile>\<^sub>C formula((F *\<^sub>B G) *\<^sub>B H))" 
+      by (simp add: MAL_sym)
+    thus ?case 
+      using \<psi>L by force
+  qed
+next
+  case (Assocr F G H)
+  then show ?case 
+  proof- 
+   (* have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp *)
+    have "\<P>(formulaA G ,\<^sub>A formulaA H \<turnstile>\<^sub>C formula (G *\<^sub>B H))" 
+      by (simp add: andMultR identity)
+    hence "\<P>(formulaA F ,\<^sub>A (formulaA G ,\<^sub>A formulaA H) \<turnstile>\<^sub>C formula (F *\<^sub>B (G *\<^sub>B H)))"
+      by (simp add: andMultR identity)
+    hence "\<P>((formulaA F ,\<^sub>A formulaA G) ,\<^sub>A formulaA H \<turnstile>\<^sub>C formula (F *\<^sub>B (G *\<^sub>B H)))" 
+      using MAL by blast
+    thus ?case 
+      using \<psi>L by force
+  qed
+next
+  case (Comm F G)
+  then show ?case 
+  proof-
 (*
+    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
+    have "\<P>(formulaA G \<turnstile>\<^sub>C formula G)" using identity by simp
+*)
+    have "\<P>(formulaA G ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
+      using andMultR identity by auto
+    hence "\<P>(formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
+      using equiv positulatesCL7 positulatesCL8 by blast
+    thus ?case
+      by (simp add: andMultL)
+  qed
+next
+  case (ConjIstar F1 G1 F2 G2)
+  then show ?case 
+  proof-
+    note \<open>\<P> (formulaA F1 \<turnstile>\<^sub>C formula G1)\<close> \<open>\<P> (formulaA F2 \<turnstile>\<^sub>C formula G2)\<close>
+    hence  "\<P>(formulaA F1 ,\<^sub>A formulaA F2 \<turnstile>\<^sub>C formula (G1 *\<^sub>B G2))" 
+      by (simp add: andMultR)
+    thus ?case
+      by (simp add: andMultL)
+  qed
+qed
+
 theorem Completeness: "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)"
   apply simp
 proof-
+  assume "\<psi> X \<turnstile>\<^sub>B \<gamma> Y"
   have "\<P>(X \<turnstile>\<^sub>C formula(\<psi> X))"
     by (simp add: \<psi>R)
   have "\<P>(formulaA(\<psi> X) \<turnstile>\<^sub>C Y)"
   proof-
-    have "\<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))" sorry
+    note\<open>\<psi> X \<turnstile>\<^sub>B \<gamma> Y\<close>
+    then have "\<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))"
+      by (simp add: intermediate)
     have "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
-      by (simp add: \<gamma>Y)
+      by (simp add: \<gamma>L)
     note \<open>\<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))\<close>\<open>\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)\<close>
     thus ?thesis 
       using cut by blast
@@ -359,5 +562,5 @@ proof-
   thus ?thesis 
     using cut by blast
 qed
-*)
+
 end
