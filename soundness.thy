@@ -539,47 +539,70 @@ next
   case (equiv X' Y' X Y)
   then show ?case 
   proof(induction rule: displayEquiv.induct)
-    case (positulatesCL1 X Y Z)
-    then show ?case sorry
-  next
-    case (positulatesCL2 X Y Z)
-    then show ?case sorry
+case (positulatesCL1 X Y Z)
+  then show ?case 
+    using SoundPostulateCL1 by blast
 next
-case (positulatesCL3 X Y Z)
-  then show ?case sorry
+  case (positulatesCL1S X Y Z)
+  then show ?case using SoundPostulateCL1R by blast
+next
+case (positulatesCL2 X Y Z)
+then show ?case using SoundPostulateCL2 by blast
+next
+  case (positulatesCL2S Y X Z)
+  then show ?case using SoundPostulateCL2R by blast
+next
+  case (positulatesCL3 X Y Z)
+  then show ?case using SoundPostulateCL3 by blast
+next
+  case (positulatesCL3S X Y Z)
+  then show ?case using SoundPostulateCL3R by blast
 next
   case (positulatesCL4 X Y Z)
-  then show ?case sorry
+  then show ?case using SoundPostulateCL4 by blast
+next
+  case (positulatesCL4S X Z Y)
+  then show ?case using SoundPostulateCL4R by blast
 next
   case (positulatesCL5 X Y)
-  then show ?case sorry
+  then show ?case using SoundPostulateCL5 by blast
+next
+  case (positulatesCL5S Y X)
+  then show ?case using SoundPostulateCL5R by blast
 next
   case (positulatesCL6 Y X)
-  then show ?case sorry
+  then show ?case using SoundPostulateCL6 by blast
+next
+  case (positulatesCL6s X Y)
+  then show ?case using SoundPostulateCL6R by blast
 next
   case (positulatesCL7 X Y Z)
-  then show ?case sorry
+  then show ?case using SoundPostulateCL7 by blast
 next
-  case (positulatesCL8 X Y Z)
-  then show ?case sorry
+  case (positulatesCL7s X Y Z)
+  then show ?case using SoundPostulateCL7R by blast
+next
+case (positulatesCL8 X Y Z)
+then show ?case using SoundPostulateCL8 by blast
+next
+  case (positulatesCL8S Y X Z)
+  then show ?case using SoundPostulateCL8R by blast
 next
   case (display_refl C)
-  then show ?case 
-    by auto
-next
-  case (display_symm C C')
-  then show ?case sorry
-
+  then show ?case
+    by simp
 next
   case (display_trans C C' C'')
   then show ?case 
     by (metis Provable.equiv Valid.cases)
 qed
+   
 next 
   case (id atom)
   then show ?case 
     by (simp add: Ax)
 qed
+
 
 
 end
