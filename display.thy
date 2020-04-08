@@ -17,7 +17,7 @@ then show ?case
 next
   case (2 Z X)
   then show ?case
-    by (metis display_symm display_trans positulatesCL5 positulatesCL6)
+    by (meson display_trans positulatesCL5 positulatesCL5S positulatesCL6s)
 next
 case (3 Z X1 X2)
   then show ?case
@@ -25,7 +25,7 @@ case (3 Z X1 X2)
 next
   case (4 Z X2 X1)
 then show ?case
-  using display_symm display_trans positulatesCL2 by blast
+  using display_trans positulatesCL2S by blast
 next
   case (5 Z X1 X2)
   then show ?case 
@@ -33,15 +33,15 @@ next
 next
   case (6 Z X2 X1)
   then show ?case
-    using display_symm display_trans positulatesCL8 by blast
+    using display_trans positulatesCL8S by blast
 next
   case (7 Z X)
   then show ?case 
-    by (meson display_symm display_trans positulatesCL5 positulatesCL6)
+    by (meson display_trans positulatesCL5 positulatesCL5S positulatesCL6)
 next
   case (8 Z X1 X2)
   then show ?case 
-    using display_symm display_trans positulatesCL4 by blast
+    using display_trans positulatesCL4S by blast
 next
   case (9 Z X2 X1)
   then show ?case 
@@ -72,11 +72,11 @@ then show ?case
 next
 case (2 Z X)
 then show ?case 
-  by (meson display_symm display_trans positulatesCL5 positulatesCL6)
+  by (meson display_trans positulatesCL5 positulatesCL5S positulatesCL6s)
 next
   case (3 Z X1 X2)
   then show ?case 
-    using display_symm display_trans positulatesCL4 by blast
+    using display_trans positulatesCL4S by blast
 next
   case (4 Z X2 X1)
   then show ?case 
@@ -92,7 +92,7 @@ next
 next
   case (7 Z X)
   then show ?case 
-    by (metis display_symm display_trans positulatesCL5 positulatesCL6)
+    by (meson display_trans positulatesCL5 positulatesCL5S positulatesCL6s)
 next
   case (8 Z X1 X2)
   then show ?case 
@@ -100,7 +100,7 @@ next
 next
   case (9 Z X2 X1)
   then show ?case 
-    using display_symm display_trans positulatesCL2 by blast
+    using display_trans positulatesCL2S by blast
 next
   case (10 Z X1 X2)
   then show ?case
@@ -108,7 +108,7 @@ next
 next
   case (11 Z X2 X1)
   then show ?case
-    using display_symm display_trans positulatesCL8 by blast
+    using display_trans positulatesCL8S by blast
 qed
   then show "neg_ant Z X \<or> pos_con Z Y \<Longrightarrow> \<exists>W. (X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (W \<turnstile>\<^sub>C Z)"
     by blast

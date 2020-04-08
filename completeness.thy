@@ -85,7 +85,7 @@ next
     then have "\<P>(formulaA (F1 \<rightarrow>\<^sub>B F2) \<turnstile>\<^sub>C ((\<sharp> (formulaA F1)) ; (formula F2)))" 
       using impL by blast
     then have "\<P>(((formulaA (F1 \<rightarrow>\<^sub>B F2)) ;\<^sub>A (formulaA F1)) \<turnstile>\<^sub>C formula F2)"
-      using display_symm equiv positulatesCL1 by blast
+      using equiv positulatesCL1S by blast
     then show ?case 
       by (simp add: impR)
   qed
@@ -97,7 +97,7 @@ next
     then have "\<P>(formulaA (F1 \<rightarrow>\<^emph>\<^sub>B F2) \<turnstile>\<^sub>C (((formulaA F1)) \<rightarrow>\<circ> (formula F2)))" 
       using impMultL by blast
     then have "\<P>((formulaA (F1 \<rightarrow>\<^emph>\<^sub>B F2) ,\<^sub>A (formulaA F1)) \<turnstile>\<^sub>C formula F2 )"
-      using display_symm equiv positulatesCL7 by blast
+      using equiv positulatesCL7s by blast
     then show ?case
       by (simp add: impMultR)
   qed
@@ -217,11 +217,11 @@ case (SharpA x)
   proof-
     note\<open>\<P> (\<sharp>\<^sub>A x \<turnstile>\<^sub>C Y)\<close>
     then have "\<P> (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C x)" 
-      by (meson display_symm equiv positulatesCL5 positulatesCL6)
+      by (meson equiv positulatesCL5 positulatesCL5S positulatesCL6)
     then have "\<P> (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C formula (\<gamma> x))" 
       by (simp add: SharpA.IH)
     then have "\<P> (\<sharp>\<^sub>A (formula (\<gamma> x)) \<turnstile>\<^sub>C Y )" 
-      by (meson display_symm equiv positulatesCL5 positulatesCL6)
+      by (meson equiv positulatesCL5 positulatesCL5S positulatesCL6)
     then have "\<P> (formulaA (\<not>\<^sub>B (\<gamma> x)) \<turnstile>\<^sub>C Y )"
       by (simp add: notL)
     thus  "\<P> (formulaA (\<psi> (\<sharp>\<^sub>A x)) \<turnstile>\<^sub>C Y)" 
@@ -284,11 +284,11 @@ next
   proof -
     note\<open>\<P> (X \<turnstile>\<^sub>C \<sharp> y)\<close>
     then have "\<P> (y \<turnstile>\<^sub>C \<sharp>X)" 
-      using display_symm equiv positulatesCL5 positulatesCL6 by blast
+      using equiv positulatesCL5 positulatesCL5S positulatesCL6 by blast
     then have "\<P> (formulaA (\<psi> y) \<turnstile>\<^sub>C \<sharp>X )"
       using Sharp.IH by blast
     then have "\<P> (X  \<turnstile>\<^sub>C \<sharp>(formulaA (\<psi> y)))" 
-      using display_symm equiv positulatesCL5 positulatesCL6 by blast
+      using equiv positulatesCL5 positulatesCL5S positulatesCL6 by blast
     then have "\<P> (X  \<turnstile>\<^sub>C (formula (\<not>\<^sub>B(\<psi> y))))"
       by (simp add: notR)
     thus "\<P> (X \<turnstile>\<^sub>C formula (\<gamma> (\<sharp> y)))" by simp
@@ -389,7 +389,7 @@ next
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C  \<sharp>(formulaA F) ; (formula \<bottom>\<^sub>B))" 
       using equiv positulatesCL3 positulatesCL4 by blast
     hence "\<P>(\<sharp>\<^sub>A(formula F) ;\<^sub>A formulaA F \<turnstile>\<^sub>C (formula \<bottom>\<^sub>B))" 
-      using display_symm equiv positulatesCL1 by blast
+      using equiv positulatesCL1S by blast
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C formula(F \<rightarrow>\<^sub>B \<bottom>\<^sub>B))" 
       by (simp add: impR)
     thus ?case 
@@ -418,7 +418,7 @@ next
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C formula(\<not>\<^sub>B F))" 
       using notR by simp
     hence "\<P>(\<sharp>\<^sub>A(formula (\<not>\<^sub>B F)) \<turnstile>\<^sub>C formula F)"
-      by (meson display_symm equiv positulatesCL5 positulatesCL6)
+      by (metis \<gamma>.simps(1) \<gamma>.simps(3) \<open>\<P> (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C \<sharp> (formulaA F))\<close> \<psi>.simps(1) \<psi>.simps(3) \<psi>L \<psi>R cut equiv positulatesCL6)
     thus ?case
       by (simp add: notL)
   qed
@@ -521,7 +521,7 @@ next
     hence "\<P> (formulaA F \<turnstile>\<^sub>C formulaA G \<rightarrow>\<circ> formula H)" 
       using cut identity impMultL by blast
     hence "\<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
-      using display_symm equiv positulatesCL7 by blast
+      using equiv positulatesCL7s by blast
     thus ?case 
       by (simp add: andMultL)
   qed
