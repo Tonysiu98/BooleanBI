@@ -97,13 +97,13 @@ next
     then have "\<P>(formulaA (F1 \<rightarrow>\<^emph>\<^sub>B F2) \<turnstile>\<^sub>C (((formulaA F1)) \<rightarrow>\<circ> (formula F2)))" 
       using impMultL by blast
     then have "\<P>((formulaA (F1 \<rightarrow>\<^emph>\<^sub>B F2) ,\<^sub>A (formulaA F1)) \<turnstile>\<^sub>C formula F2 )"
-      using equiv positulatesCL7s by blast
+      using equiv positulatesCL7S by blast
     then show ?case
       by (simp add: impMultR)
   qed
 qed
 
-lemma \<psi>R: "\<P>(X \<turnstile>\<^sub>C formula (\<psi> X))" and \<gamma>L : "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
+lemma \<Psi>R: "\<P>(X \<turnstile>\<^sub>C formula (\<Psi> X))" and \<Upsilon>L : "\<P>(formulaA (\<Upsilon> Y) \<turnstile>\<^sub>C Y)"
 proof(induction X and Y)
 case (formulaA x)
   then show ?case 
@@ -116,10 +116,10 @@ next
 case (SharpA x)
   then show ?case 
   proof-
-    note \<open>\<P> (formulaA (\<gamma> x) \<turnstile>\<^sub>C x)\<close>
-    then have "\<P> ((\<sharp>\<^sub>A x) \<turnstile>\<^sub>C (\<sharp>(formulaA(\<gamma> x))))" 
+    note \<open>\<P> (formulaA (\<Upsilon> x) \<turnstile>\<^sub>C x)\<close>
+    then have "\<P> ((\<sharp>\<^sub>A x) \<turnstile>\<^sub>C (\<sharp>(formulaA(\<Upsilon> x))))" 
       using equiv positulatesCL5 by blast
-    then have "\<P> ((\<sharp>\<^sub>A x) \<turnstile>\<^sub>C formula (\<not>\<^sub>B (\<gamma> x)))"
+    then have "\<P> ((\<sharp>\<^sub>A x) \<turnstile>\<^sub>C formula (\<not>\<^sub>B (\<Upsilon> x)))"
       by (simp add: notR)
     then show ?case 
       by auto
@@ -128,13 +128,13 @@ next
 case (SemiColonA x1 x2)
   then show ?case 
   proof -
-    note\<open>\<P> (x1 \<turnstile>\<^sub>C formula (\<psi> x1))\<close>
-    then have "\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<psi> x1))"
+    note\<open>\<P> (x1 \<turnstile>\<^sub>C formula (\<Psi> x1))\<close>
+    then have "\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x1))"
       using WkL by blast
-    note \<open>\<P> (x2 \<turnstile>\<^sub>C formula (\<psi> x2))\<close>
-    then have "\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<psi> x2))" 
+    note \<open>\<P> (x2 \<turnstile>\<^sub>C formula (\<Psi> x2))\<close>
+    then have "\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x2))" 
       using WkR equiv positulatesCL2 by blast
-    note\<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<psi> x1))\<close> \<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<psi> x2))\<close>
+    note\<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x1))\<close> \<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x2))\<close>
     then show ?case 
       using andR by auto
   qed
@@ -146,8 +146,8 @@ next
   case (CommaA x1 x2)
   then show ?case 
   proof -
-    note\<open>\<P> (x1 \<turnstile>\<^sub>C formula (\<psi> x1))\<close> \<open>\<P> (x2 \<turnstile>\<^sub>C formula (\<psi> x2))\<close>
-    then have "\<P>((x1 ,\<^sub>A x2) \<turnstile>\<^sub>C formula ((\<psi> x1) *\<^sub>B (\<psi> x2)))"
+    note\<open>\<P> (x1 \<turnstile>\<^sub>C formula (\<Psi> x1))\<close> \<open>\<P> (x2 \<turnstile>\<^sub>C formula (\<Psi> x2))\<close>
+    then have "\<P>((x1 ,\<^sub>A x2) \<turnstile>\<^sub>C formula ((\<Psi> x1) *\<^sub>B (\<Psi> x2)))"
       by (simp add: andMultR)
     then show ?case
       by simp
@@ -164,10 +164,10 @@ next
   case (Sharp x)
   then show ?case 
   proof -
-    note\<open>\<P> (x \<turnstile>\<^sub>C formula (\<psi> x))\<close>
-    then have "\<P>(\<sharp>\<^sub>A (formula (\<psi> x)) \<turnstile>\<^sub>C \<sharp> x)"
+    note\<open>\<P> (x \<turnstile>\<^sub>C formula (\<Psi> x))\<close>
+    then have "\<P>(\<sharp>\<^sub>A (formula (\<Psi> x)) \<turnstile>\<^sub>C \<sharp> x)"
       using equiv positulatesCL5 by blast
-    then have "\<P>(formulaA (\<not>\<^sub>B (\<psi> x)) \<turnstile>\<^sub>C \<sharp> x)"
+    then have "\<P>(formulaA (\<not>\<^sub>B (\<Psi> x)) \<turnstile>\<^sub>C \<sharp> x)"
       using notL by blast
     then show ?case
       by simp
@@ -176,14 +176,14 @@ next
   case (SemiColon x1 x2)
   then show ?case 
   proof-
-    note \<open>\<P> (formulaA (\<gamma> x1) \<turnstile>\<^sub>C x1)\<close>
-    then have "\<P> (formulaA (\<gamma> x1) \<turnstile>\<^sub>C x1 ; x2)" 
+    note \<open>\<P> (formulaA (\<Upsilon> x1) \<turnstile>\<^sub>C x1)\<close>
+    then have "\<P> (formulaA (\<Upsilon> x1) \<turnstile>\<^sub>C x1 ; x2)" 
       using WkL equiv positulatesCL4 by blast
-    note \<open>\<P> (formulaA (\<gamma> x2) \<turnstile>\<^sub>C x2)\<close>
-    then have "\<P> (formulaA (\<gamma> x2) \<turnstile>\<^sub>C x1 ; x2)"
+    note \<open>\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x2)\<close>
+    then have "\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x1 ; x2)"
       using WkR by auto
-    note \<open>\<P> (formulaA (\<gamma> x1) \<turnstile>\<^sub>C x1 ; x2)\<close> \<open>\<P> (formulaA (\<gamma> x2) \<turnstile>\<^sub>C x1 ; x2)\<close>
-    then have "\<P> (formulaA ((\<gamma> x1) \<or>\<^sub>B(\<gamma> x2)) \<turnstile>\<^sub>C x1 ; x2)"
+    note \<open>\<P> (formulaA (\<Upsilon> x1) \<turnstile>\<^sub>C x1 ; x2)\<close> \<open>\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x1 ; x2)\<close>
+    then have "\<P> (formulaA ((\<Upsilon> x1) \<or>\<^sub>B(\<Upsilon> x2)) \<turnstile>\<^sub>C x1 ; x2)"
       by (simp add: orL)
     then show ?case
       by simp
@@ -192,8 +192,8 @@ next
   case (DotArrow x1 x2)
   then show ?case 
   proof -
-    note \<open>\<P> (x1 \<turnstile>\<^sub>C formula (\<psi> x1))\<close> \<open>\<P> (formulaA (\<gamma> x2) \<turnstile>\<^sub>C x2)\<close>
-    then have "\<P>(formulaA ((\<psi> x1) \<rightarrow>\<^emph>\<^sub>B (\<gamma> x2)) \<turnstile>\<^sub>C x1 \<rightarrow>\<circ> x2)"
+    note \<open>\<P> (x1 \<turnstile>\<^sub>C formula (\<Psi> x1))\<close> \<open>\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x2)\<close>
+    then have "\<P>(formulaA ((\<Psi> x1) \<rightarrow>\<^emph>\<^sub>B (\<Upsilon> x2)) \<turnstile>\<^sub>C x1 \<rightarrow>\<circ> x2)"
       by (simp add: impMultL)
     then show ?case
       by simp
@@ -201,8 +201,8 @@ qed
 qed
 
 
-lemma \<psi>L: "\<And>Y. \<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow>   \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C Y)"
-      and \<gamma>R : " \<And>X. \<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow>  \<P>(X \<turnstile>\<^sub>C formula (\<gamma> Y))"
+lemma \<Psi>L: "\<And>Y. \<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow>   \<P>(formulaA (\<Psi> X) \<turnstile>\<^sub>C Y)"
+      and \<Upsilon>R : " \<And>X. \<P>(X \<turnstile>\<^sub>C Y) \<Longrightarrow>  \<P>(X \<turnstile>\<^sub>C formula (\<Upsilon> Y))"
 proof(induction X and Y)
 case (formulaA x)
 then show ?case 
@@ -217,14 +217,14 @@ case (SharpA x)
   proof-
     note\<open>\<P> (\<sharp>\<^sub>A x \<turnstile>\<^sub>C Y)\<close>
     then have "\<P> (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C x)" 
-      by (meson equiv positulatesCL5 positulatesCL5S positulatesCL6)
-    then have "\<P> (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C formula (\<gamma> x))" 
+      by (metis equiv positulatesCL5 positulatesCL5S positulatesCL6)
+    then have "\<P> (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C formula (\<Upsilon> x))" 
       by (simp add: SharpA.IH)
-    then have "\<P> (\<sharp>\<^sub>A (formula (\<gamma> x)) \<turnstile>\<^sub>C Y )" 
-      by (meson equiv positulatesCL5 positulatesCL5S positulatesCL6)
-    then have "\<P> (formulaA (\<not>\<^sub>B (\<gamma> x)) \<turnstile>\<^sub>C Y )"
+    then have "\<P> (\<sharp>\<^sub>A (formula (\<Upsilon> x)) \<turnstile>\<^sub>C Y )" 
+      by (metis equiv positulatesCL5 positulatesCL5S positulatesCL6)
+    then have "\<P> (formulaA (\<not>\<^sub>B (\<Upsilon> x)) \<turnstile>\<^sub>C Y )"
       by (simp add: notL)
-    thus  "\<P> (formulaA (\<psi> (\<sharp>\<^sub>A x)) \<turnstile>\<^sub>C Y)" 
+    thus  "\<P> (formulaA (\<Psi> (\<sharp>\<^sub>A x)) \<turnstile>\<^sub>C Y)" 
       by simp
   qed
 next
@@ -234,17 +234,17 @@ next
       note \<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C Y)\<close>
     then have "\<P>(x1 \<turnstile>\<^sub>C \<sharp>x2 ; Y)" 
       using equiv positulatesCL1 by blast
-    then have "\<P>(formulaA (\<psi> x1) \<turnstile>\<^sub>C \<sharp>x2 ; Y)"
+    then have "\<P>(formulaA (\<Psi> x1) \<turnstile>\<^sub>C \<sharp>x2 ; Y)"
       by (simp add: SemiColonA.IH(1))
-    then have "\<P>(x2  \<turnstile>\<^sub>C \<sharp>(formulaA (\<psi> x1)) ; Y)"
+    then have "\<P>(x2  \<turnstile>\<^sub>C \<sharp>(formulaA (\<Psi> x1)) ; Y)"
       using equiv positulatesCL1 positulatesCL2 by blast
-    then have "\<P>(formulaA (\<psi> x2)  \<turnstile>\<^sub>C \<sharp>(formulaA (\<psi> x1)) ; Y)" 
+    then have "\<P>(formulaA (\<Psi> x2)  \<turnstile>\<^sub>C \<sharp>(formulaA (\<Psi> x1)) ; Y)" 
       using SemiColonA.IH(2) by blast
-    then have "\<P>(formulaA (\<psi> x1) ;\<^sub>A formulaA (\<psi> x2)  \<turnstile>\<^sub>C  Y)"
+    then have "\<P>(formulaA (\<Psi> x1) ;\<^sub>A formulaA (\<Psi> x2)  \<turnstile>\<^sub>C  Y)"
       using equiv positulatesCL2 by blast
-    then have "\<P>(formulaA ((\<psi> x1) \<and>\<^sub>B (\<psi> x2))  \<turnstile>\<^sub>C  Y)"
+    then have "\<P>(formulaA ((\<Psi> x1) \<and>\<^sub>B (\<Psi> x2))  \<turnstile>\<^sub>C  Y)"
       using andL by blast
-    thus "\<P> (formulaA (\<psi> (x1 ;\<^sub>A x2)) \<turnstile>\<^sub>C Y)" 
+    thus "\<P> (formulaA (\<Psi> (x1 ;\<^sub>A x2)) \<turnstile>\<^sub>C Y)" 
       by simp
   qed
 next
@@ -258,17 +258,17 @@ next
     note\<open>\<P> (x1 ,\<^sub>A x2 \<turnstile>\<^sub>C Y)\<close>
     then have "\<P> (x1 \<turnstile>\<^sub>C x2 \<rightarrow>\<circ> Y)" 
       using equiv positulatesCL7 by blast
-    then have "\<P> (formulaA (\<psi> x1) \<turnstile>\<^sub>C x2 \<rightarrow>\<circ> Y)" 
+    then have "\<P> (formulaA (\<Psi> x1) \<turnstile>\<^sub>C x2 \<rightarrow>\<circ> Y)" 
       by (simp add: CommaA.IH(1))
-    then have "\<P> (x2  \<turnstile>\<^sub>C formulaA (\<psi> x1) \<rightarrow>\<circ> Y)" 
+    then have "\<P> (x2  \<turnstile>\<^sub>C formulaA (\<Psi> x1) \<rightarrow>\<circ> Y)" 
       using equiv positulatesCL7 positulatesCL8 by blast
-    then have "\<P> (formulaA (\<psi> x2)  \<turnstile>\<^sub>C formulaA (\<psi> x1) \<rightarrow>\<circ> Y)" 
+    then have "\<P> (formulaA (\<Psi> x2)  \<turnstile>\<^sub>C formulaA (\<Psi> x1) \<rightarrow>\<circ> Y)" 
       by (simp add: CommaA.IH(2))
-    then have "\<P> (formulaA (\<psi> x1) ,\<^sub>A  formulaA (\<psi> x2)  \<turnstile>\<^sub>C Y)" 
+    then have "\<P> (formulaA (\<Psi> x1) ,\<^sub>A  formulaA (\<Psi> x2)  \<turnstile>\<^sub>C Y)" 
       using equiv positulatesCL8 by blast
-    then have "\<P> (formulaA ((\<psi> x1) *\<^sub>B (\<psi> x2))  \<turnstile>\<^sub>C Y)" 
+    then have "\<P> (formulaA ((\<Psi> x1) *\<^sub>B (\<Psi> x2))  \<turnstile>\<^sub>C Y)" 
       by (simp add: andMultL)
-    thus "\<P> (formulaA (\<psi>(x1 ,\<^sub>A x2))  \<turnstile>\<^sub>C Y)" by simp
+    thus "\<P> (formulaA (\<Psi>(x1 ,\<^sub>A x2))  \<turnstile>\<^sub>C Y)" by simp
   qed
 next
   case (formula x)
@@ -285,13 +285,13 @@ next
     note\<open>\<P> (X \<turnstile>\<^sub>C \<sharp> y)\<close>
     then have "\<P> (y \<turnstile>\<^sub>C \<sharp>X)" 
       using equiv positulatesCL5 positulatesCL5S positulatesCL6 by blast
-    then have "\<P> (formulaA (\<psi> y) \<turnstile>\<^sub>C \<sharp>X )"
+    then have "\<P> (formulaA (\<Psi> y) \<turnstile>\<^sub>C \<sharp>X )"
       using Sharp.IH by blast
-    then have "\<P> (X  \<turnstile>\<^sub>C \<sharp>(formulaA (\<psi> y)))" 
+    then have "\<P> (X  \<turnstile>\<^sub>C \<sharp>(formulaA (\<Psi> y)))" 
       using equiv positulatesCL5 positulatesCL5S positulatesCL6 by blast
-    then have "\<P> (X  \<turnstile>\<^sub>C (formula (\<not>\<^sub>B(\<psi> y))))"
+    then have "\<P> (X  \<turnstile>\<^sub>C (formula (\<not>\<^sub>B(\<Psi> y))))"
       by (simp add: notR)
-    thus "\<P> (X \<turnstile>\<^sub>C formula (\<gamma> (\<sharp> y)))" by simp
+    thus "\<P> (X \<turnstile>\<^sub>C formula (\<Upsilon> (\<sharp> y)))" by simp
   qed
 next
   case (SemiColon y1 y2)
@@ -300,17 +300,17 @@ next
     note\<open>\<P> (X \<turnstile>\<^sub>C y1 ; y2)\<close>
     then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A y1) \<turnstile>\<^sub>C y2)"
       using equiv positulatesCL3 by blast
-    then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A y1) \<turnstile>\<^sub>C formula (\<gamma> y2))"
+    then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A y1) \<turnstile>\<^sub>C formula (\<Upsilon> y2))"
       by (simp add: SemiColon.IH(2))
-    then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A (formula (\<gamma> y2))) \<turnstile>\<^sub>C y1)" 
+    then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A (formula (\<Upsilon> y2))) \<turnstile>\<^sub>C y1)" 
       using equiv positulatesCL3 positulatesCL4 by blast
-    then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A (formula (\<gamma> y2))) \<turnstile>\<^sub>C formula (\<gamma> y1))" 
+    then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A (formula (\<Upsilon> y2))) \<turnstile>\<^sub>C formula (\<Upsilon> y1))" 
       using SemiColon.IH(1) by blast
-    then have "\<P> (X \<turnstile>\<^sub>C formula (\<gamma> y1) ; formula (\<gamma> y2))"
+    then have "\<P> (X \<turnstile>\<^sub>C formula (\<Upsilon> y1) ; formula (\<Upsilon> y2))"
       using equiv positulatesCL4 by blast
-    then have "\<P> (X \<turnstile>\<^sub>C formula ((\<gamma> y1) \<or>\<^sub>B (\<gamma> y2)))" 
+    then have "\<P> (X \<turnstile>\<^sub>C formula ((\<Upsilon> y1) \<or>\<^sub>B (\<Upsilon> y2)))" 
       using orR by blast
-    thus "\<P>(X \<turnstile>\<^sub>C formula (\<gamma> (y1 ; y2)))" by simp
+    thus "\<P>(X \<turnstile>\<^sub>C formula (\<Upsilon> (y1 ; y2)))" by simp
   qed
 next
   case (DotArrow x1 y2)
@@ -319,26 +319,25 @@ next
     note\<open>\<P> (X \<turnstile>\<^sub>C x1 \<rightarrow>\<circ> y2)\<close>
     then have "\<P>(x1 \<turnstile>\<^sub>C X \<rightarrow>\<circ> y2)" 
       using equiv positulatesCL7 positulatesCL8 by blast
-    then have "\<P>(formulaA (\<psi> x1) \<turnstile>\<^sub>C X \<rightarrow>\<circ> y2)" 
+    then have "\<P>(formulaA (\<Psi> x1) \<turnstile>\<^sub>C X \<rightarrow>\<circ> y2)" 
       using DotArrow.IH(1) by blast
-    then have "\<P>(formulaA (\<psi> x1) ,\<^sub>A X \<turnstile>\<^sub>C y2)" 
+    then have "\<P>(formulaA (\<Psi> x1) ,\<^sub>A X \<turnstile>\<^sub>C y2)" 
       using equiv positulatesCL7 positulatesCL8 by blast 
-    then have "\<P>(formulaA (\<psi> x1) ,\<^sub>A X \<turnstile>\<^sub>C formula (\<gamma> y2))"
+    then have "\<P>(formulaA (\<Psi> x1) ,\<^sub>A X \<turnstile>\<^sub>C formula (\<Upsilon> y2))"
       by (simp add: DotArrow.IH(2))
-    then have "\<P>(X ,\<^sub>A formulaA (\<psi> x1) \<turnstile>\<^sub>C formula (\<gamma> y2))"
+    then have "\<P>(X ,\<^sub>A formulaA (\<Psi> x1) \<turnstile>\<^sub>C formula (\<Upsilon> y2))"
       using equiv positulatesCL7 positulatesCL8 by blast
-    then have "\<P> (X \<turnstile>\<^sub>C formula ((\<psi> x1) \<rightarrow>\<^emph>\<^sub>B(\<gamma> y2)))"
+    then have "\<P> (X \<turnstile>\<^sub>C formula ((\<Psi> x1) \<rightarrow>\<^emph>\<^sub>B(\<Upsilon> y2)))"
       by (simp add: impMultR)
-    thus "\<P> (X \<turnstile>\<^sub>C formula (\<gamma> (x1 \<rightarrow>\<circ> y2)))" 
+    thus "\<P> (X \<turnstile>\<^sub>C formula (\<Upsilon> (x1 \<rightarrow>\<circ> y2)))" 
       by simp
   qed   
 qed
 
 
-
 section "Completeness"
 
-lemma intermediate: "\<psi> X \<turnstile>\<^sub>B \<gamma> Y \<Longrightarrow> \<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))"
+lemma intermediate: "\<Psi> X \<turnstile>\<^sub>B \<Upsilon> Y \<Longrightarrow> \<P>(formulaA (\<Psi> X) \<turnstile>\<^sub>C formula (\<Upsilon> Y))"
 proof(induction rule: turnstile_BBI.induct)
 case (Ax F)
   then show ?case 
@@ -354,9 +353,9 @@ next
   then show ?case 
   proof-
     note \<open>\<P> (formulaA (F \<and>\<^sub>B G) \<turnstile>\<^sub>C formula H)\<close>
-    hence "\<P> (formulaA (\<psi> (formulaA F ;\<^sub>A formulaA G)) \<turnstile>\<^sub>C formula H)" 
+    hence "\<P> (formulaA (\<Psi> (formulaA F ;\<^sub>A formulaA G)) \<turnstile>\<^sub>C formula H)" 
       by simp
-    hence "\<P> (formulaA F ;\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)" using cut \<psi>R by blast
+    hence "\<P> (formulaA F ;\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)" using cut \<Psi>R by blast
     thus ?case 
       using impR by blast
   qed
@@ -418,7 +417,7 @@ next
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C formula(\<not>\<^sub>B F))" 
       using notR by simp
     hence "\<P>(\<sharp>\<^sub>A(formula (\<not>\<^sub>B F)) \<turnstile>\<^sub>C formula F)"
-      by (metis \<gamma>.simps(1) \<gamma>.simps(3) \<open>\<P> (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C \<sharp> (formulaA F))\<close> \<psi>.simps(1) \<psi>.simps(3) \<psi>L \<psi>R cut equiv positulatesCL6)
+      by (metis \<Upsilon>.simps(1) \<Upsilon>.simps(3) \<open>\<P> (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C \<sharp> (formulaA F))\<close> \<Psi>.simps(1) \<Psi>.simps(3) \<Psi>L \<Psi>R cut equiv positulatesCL6)
     thus ?case
       by (simp add: notL)
   qed
@@ -503,12 +502,12 @@ next
   then show ?case 
   proof-
     note\<open>\<P> (formulaA (F *\<^sub>B G) \<turnstile>\<^sub>C formula H)\<close>
-    hence "\<P> (formulaA (\<psi> (formulaA F) *\<^sub>B \<psi> (formulaA G)) \<turnstile>\<^sub>C formula H)" 
+    hence "\<P> (formulaA (\<Psi> (formulaA F) *\<^sub>B \<Psi> (formulaA G)) \<turnstile>\<^sub>C formula H)" 
       by simp
-    hence "\<P> (formulaA (\<psi> (formulaA F ,\<^sub>A formulaA G)) \<turnstile>\<^sub>C formula H)" 
+    hence "\<P> (formulaA (\<Psi> (formulaA F ,\<^sub>A formulaA G)) \<turnstile>\<^sub>C formula H)" 
       by simp
     hence "\<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
-      using \<psi>R cut by blast
+      using \<Psi>R cut by blast
     thus ?case
       using impMultR by blast
   qed
@@ -521,7 +520,7 @@ next
     hence "\<P> (formulaA F \<turnstile>\<^sub>C formulaA G \<rightarrow>\<circ> formula H)" 
       using cut identity impMultL by blast
     hence "\<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
-      using equiv positulatesCL7s by blast
+      using equiv positulatesCL7S by blast
     thus ?case 
       by (simp add: andMultL)
   qed
@@ -538,13 +537,12 @@ next
     hence "\<P>(formulaA F ,\<^sub>A (formulaA G ,\<^sub>A formulaA H) \<turnstile>\<^sub>C formula((F *\<^sub>B G) *\<^sub>B H))" 
       by (simp add: MAL_sym)
     thus ?case 
-      using \<psi>L by force
+      using \<Psi>L by force
   qed
 next
   case (Assocr F G H)
   then show ?case 
   proof- 
-   (* have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp *)
     have "\<P>(formulaA G ,\<^sub>A formulaA H \<turnstile>\<^sub>C formula (G *\<^sub>B H))" 
       by (simp add: andMultR identity)
     hence "\<P>(formulaA F ,\<^sub>A (formulaA G ,\<^sub>A formulaA H) \<turnstile>\<^sub>C formula (F *\<^sub>B (G *\<^sub>B H)))"
@@ -552,16 +550,12 @@ next
     hence "\<P>((formulaA F ,\<^sub>A formulaA G) ,\<^sub>A formulaA H \<turnstile>\<^sub>C formula (F *\<^sub>B (G *\<^sub>B H)))" 
       using MAL by blast
     thus ?case 
-      using \<psi>L by force
+      using \<Psi>L by force
   qed
 next
   case (Comm F G)
   then show ?case 
   proof-
-(*
-    have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
-    have "\<P>(formulaA G \<turnstile>\<^sub>C formula G)" using identity by simp
-*)
     have "\<P>(formulaA G ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
       using andMultR identity by auto
     hence "\<P>(formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
@@ -584,21 +578,21 @@ qed
 theorem Completeness: "Valid (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P>(X \<turnstile>\<^sub>C Y)"
   apply simp
 proof-
-  assume "\<psi> X \<turnstile>\<^sub>B \<gamma> Y"
-  have "\<P>(X \<turnstile>\<^sub>C formula(\<psi> X))"
-    by (simp add: \<psi>R)
-  have "\<P>(formulaA(\<psi> X) \<turnstile>\<^sub>C Y)"
+  assume "\<Psi> X \<turnstile>\<^sub>B \<Upsilon> Y"
+  have "\<P>(X \<turnstile>\<^sub>C formula(\<Psi> X))"
+    by (simp add: \<Psi>R)
+  have "\<P>(formulaA(\<Psi> X) \<turnstile>\<^sub>C Y)"
   proof-
-    note\<open>\<psi> X \<turnstile>\<^sub>B \<gamma> Y\<close>
-    then have "\<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))"
+    note\<open>\<Psi> X \<turnstile>\<^sub>B \<Upsilon> Y\<close>
+    then have "\<P>(formulaA (\<Psi> X) \<turnstile>\<^sub>C formula (\<Upsilon> Y))"
       by (simp add: intermediate)
-    have "\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)"
-      by (simp add: \<gamma>L)
-    note \<open>\<P>(formulaA (\<psi> X) \<turnstile>\<^sub>C formula (\<gamma> Y))\<close>\<open>\<P>(formulaA (\<gamma> Y) \<turnstile>\<^sub>C Y)\<close>
+    have "\<P>(formulaA (\<Upsilon> Y) \<turnstile>\<^sub>C Y)"
+      by (simp add: \<Upsilon>L)
+    note \<open>\<P>(formulaA (\<Psi> X) \<turnstile>\<^sub>C formula (\<Upsilon> Y))\<close>\<open>\<P>(formulaA (\<Upsilon> Y) \<turnstile>\<^sub>C Y)\<close>
     thus ?thesis 
       using cut by blast
   qed
-  note\<open>\<P>(X \<turnstile>\<^sub>C formula(\<psi> X))\<close> \<open>\<P>(formulaA(\<psi> X) \<turnstile>\<^sub>C Y)\<close>
+  note\<open>\<P>(X \<turnstile>\<^sub>C formula(\<Psi> X))\<close> \<open>\<P>(formulaA(\<Psi> X) \<turnstile>\<^sub>C Y)\<close>
   thus ?thesis 
     using cut by blast
 qed

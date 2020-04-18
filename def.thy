@@ -10,16 +10,16 @@ datatype BBI_form =
   | Falsity                 ("\<bottom>\<^sub>B")
   | MTruth                  ("\<top>\<^sup>*\<^sub>B")
   | Atom atom
-  | Neg BBI_form            ("\<not>\<^sub>B _" 101)
+  | Neg BBI_form            ("\<not>\<^sub>B")
   | Con BBI_form BBI_form   (infix "\<and>\<^sub>B" 101)
   | MCon BBI_form BBI_form  (infix "*\<^sub>B" 101)
   | Dis BBI_form BBI_form   (infix "\<or>\<^sub>B" 101)
   | Imp  BBI_form BBI_form  (infix "\<rightarrow>\<^sub>B" 101)
   | Mimp  BBI_form BBI_form (infix "\<rightarrow>\<^emph>\<^sub>B" 101)
 
+
 section "BBI formula Axioms"
 
-(* Initial attempt of turnstile, this includes both CL and LM*)
 inductive turnstile_BBI :: "BBI_form \<Rightarrow> BBI_form \<Rightarrow> bool" (infix "\<turnstile>\<^sub>B" 55)
   where 
 Ax : "F \<turnstile>\<^sub>B F"|
@@ -30,7 +30,7 @@ ImpB : "F \<turnstile>\<^sub>B G \<rightarrow>\<^sub>B H \<Longrightarrow> F \<a
 MP : "F \<turnstile>\<^sub>B G \<Longrightarrow> G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B H"|
 Notl: "(\<not>\<^sub>B F) \<turnstile>\<^sub>B F \<rightarrow>\<^sub>B \<bottom>\<^sub>B" |
 Notr: "F \<rightarrow>\<^sub>B \<bottom>\<^sub>B \<turnstile>\<^sub>B (\<not>\<^sub>B F)"|
-Notnot : "(\<not>\<^sub>B \<not>\<^sub>B F) \<turnstile>\<^sub>B F" |
+Notnot : "(\<not>\<^sub>B (\<not>\<^sub>B F)) \<turnstile>\<^sub>B F" |
 ConjI : "F \<turnstile>\<^sub>B G \<Longrightarrow> F \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B G \<and>\<^sub>B H" |
 DisjE : "F \<turnstile>\<^sub>B H \<Longrightarrow> G \<turnstile>\<^sub>B H \<Longrightarrow> F \<or>\<^sub>B G \<turnstile>\<^sub>B H"|
 ConjE1 : "G1 \<and>\<^sub>B G2 \<turnstile>\<^sub>B G1"|
@@ -45,6 +45,7 @@ Assocl: "F *\<^sub>B (G *\<^sub>B H) \<turnstile>\<^sub>B (F *\<^sub>B G) *\<^su
 Assocr: "(F *\<^sub>B G) *\<^sub>B H \<turnstile>\<^sub>B F *\<^sub>B (G *\<^sub>B H)"|
 Comm : "(F *\<^sub>B G) \<turnstile>\<^sub>B (G *\<^sub>B F)"|
 ConjIstar : "F1  \<turnstile>\<^sub>B G1 \<Longrightarrow> F2  \<turnstile>\<^sub>B G2 \<Longrightarrow> (F1 *\<^sub>B F2) \<turnstile>\<^sub>B (G1 *\<^sub>B G2)"
+
 
 section "Structure Definition"
 
@@ -64,32 +65,32 @@ SemiColon Consequent_Structure Consequent_Structure (infix ";" 101)|
 DotArrow Antecedent_Structure Consequent_Structure  (infix "\<rightarrow>\<circ>" 101)
 
 primrec 
-  \<psi> :: "Antecedent_Structure \<Rightarrow> BBI_form"  and 
-  \<gamma> :: "Consequent_Structure \<Rightarrow> BBI_form"
+  \<Psi> :: "Antecedent_Structure \<Rightarrow> BBI_form"  and 
+  \<Upsilon> :: "Consequent_Structure \<Rightarrow> BBI_form"
   where
-"\<psi> (formulaA F)  = F"|
-"\<psi> \<emptyset>\<^sub>A = \<top>\<^sub>B"|
-"\<psi> (\<sharp>\<^sub>A X) =\<not>\<^sub>B \<gamma> X "|
-"\<psi> (X ;\<^sub>A Y) = (\<psi> X) \<and>\<^sub>B (\<psi> Y)"|
-"\<psi> \<oslash> = \<top>\<^sup>*\<^sub>B "|
-"\<psi> (X ,\<^sub>A Y) = (\<psi> X) *\<^sub>B (\<psi> Y) "|
-"\<gamma> (formula F) = F"|
-"\<gamma> \<emptyset> = \<bottom>\<^sub>B "|
-"\<gamma> (\<sharp> X) =  \<not>\<^sub>B \<psi> X"|
-"\<gamma> (X ; Y) = \<gamma> X \<or>\<^sub>B \<gamma> Y"|
-"\<gamma> (X \<rightarrow>\<circ> Y) = \<psi> X \<rightarrow>\<^emph>\<^sub>B \<gamma> Y"
+"\<Psi> (formulaA F)  = F"|
+"\<Psi> \<emptyset>\<^sub>A = \<top>\<^sub>B"|
+"\<Psi> (\<sharp>\<^sub>A X) = \<not>\<^sub>B (\<Upsilon> X) "|
+"\<Psi> (X ;\<^sub>A Y) = (\<Psi> X) \<and>\<^sub>B (\<Psi> Y)"|
+"\<Psi> \<oslash> = \<top>\<^sup>*\<^sub>B "|
+"\<Psi> (X ,\<^sub>A Y) = (\<Psi> X) *\<^sub>B (\<Psi> Y) "|
+"\<Upsilon> (formula F) = F"|
+"\<Upsilon> \<emptyset> = \<bottom>\<^sub>B "|
+"\<Upsilon> (\<sharp> X) =  \<not>\<^sub>B (\<Psi> X)"|
+"\<Upsilon> (X ; Y) = \<Upsilon> X \<or>\<^sub>B \<Upsilon> Y"|
+"\<Upsilon> (X \<rightarrow>\<circ> Y) = \<Psi> X \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Y"
 
 datatype Consecution = Consecution Antecedent_Structure Consequent_Structure (infix "\<turnstile>\<^sub>C" 50)
 
 (* using fun which is introduced in HOL, we can use pattern matching for defining valid*)
-fun Valid :: "Consecution \<Rightarrow> bool" where
-"Valid (Consecution X Y) =  \<psi> X  \<turnstile>\<^sub>B \<gamma> Y"
+primrec Valid :: "Consecution \<Rightarrow> bool" where
+"Valid (X \<turnstile>\<^sub>C Y) =  \<Psi> X  \<turnstile>\<^sub>B \<Upsilon> Y"
 
 section "Display Calculus"
 
-inductive displayEquiv :: "Consecution \<Rightarrow> Consecution \<Rightarrow> bool " (infix "\<equiv>\<^sub>D" 100) where
+inductive displayEquiv  :: "Consecution \<Rightarrow> Consecution \<Rightarrow> bool " (infix "\<equiv>\<^sub>D" 100) where
 (*(X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) <>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z) <>\<^sub>D (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)*)
-positulatesCL1 :"((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"|
+positulatesCL1:"((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"|
 positulatesCL1S :"(X \<turnstile>\<^sub>C \<sharp>Y ; Z) \<equiv>\<^sub>D ((X ;\<^sub>A Y) \<turnstile>\<^sub>C Z)"|
 positulatesCL2 :"(X \<turnstile>\<^sub>C \<sharp>Y ; Z) \<equiv>\<^sub>D (Y ;\<^sub>A X \<turnstile>\<^sub>C Z)"|
 positulatesCL2S :"(Y ;\<^sub>A X \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C \<sharp>Y ; Z)"|
@@ -102,10 +103,10 @@ positulatesCL4S :"(X \<turnstile>\<^sub>C Z ; Y) \<equiv>\<^sub>D (X ;\<^sub>A \
 positulatesCL5 :"(X \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"|
 positulatesCL5S :"(\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y)"|
 positulatesCL6 :"(\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X) \<equiv>\<^sub>D (\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y)"|
-positulatesCL6s :"(\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"|
+positulatesCL6S :"(\<sharp>\<^sub>A(\<sharp>X) \<turnstile>\<^sub>C Y) \<equiv>\<^sub>D (\<sharp>\<^sub>AY \<turnstile>\<^sub>C \<sharp>X)"|
 (*(X ,\<^sub>A Y \<turnstile>\<^sub>C Z) <>\<^sub>D (X \<turnstile>\<^sub>C Y \<comment>\<circ> Z ) <>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)*)
 positulatesCL7 :"(X ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z )"|
-positulatesCL7s :"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z ) \<equiv>\<^sub>D (X ,\<^sub>A Y \<turnstile>\<^sub>C Z)"|
+positulatesCL7S :"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z ) \<equiv>\<^sub>D (X ,\<^sub>A Y \<turnstile>\<^sub>C Z)"|
 positulatesCL8:"(X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z) \<equiv>\<^sub>D (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)"|
 positulatesCL8S:"(Y ,\<^sub>A X \<turnstile>\<^sub>C Z) \<equiv>\<^sub>D (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z)"|
 (*Reflective Transistive Closure*)

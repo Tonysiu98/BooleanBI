@@ -6,4 +6,5 @@ test.thy~
 .vscode
 completeness.thy~
 display.thy~
-
+.DS_Store
+Scratch.thy
