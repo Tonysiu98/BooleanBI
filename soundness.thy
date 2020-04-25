@@ -689,67 +689,67 @@ next
   case (equiv X' Y' X Y)
   then show ?case 
   proof(induction rule: displayEquiv.induct)
-    case (positulatesCL1 X Y Z)
+    case (postulateCL1 X Y Z)
     then show ?case 
       using SoundPostulateCL1 by blast
   next
-    case (positulatesCL1S X Y Z)
+    case (postulateCL1S X Y Z)
     then show ?case 
       using SoundPostulateCL1S by blast
   next
-    case (positulatesCL2 X Y Z)
+    case (postulateCL2 X Y Z)
     then show ?case 
       using SoundPostulateCL2 by blast
   next
-    case (positulatesCL2S Y X Z)
+    case (postulateCL2S Y X Z)
     then show ?case 
       using SoundPostulateCL2S by blast
   next
-    case (positulatesCL3 X Y Z)
+    case (postulateCL3 X Y Z)
     then show ?case 
       using SoundPostulateCL3 by blast
   next
-    case (positulatesCL3S X Y Z)
+    case (postulateCL3S X Y Z)
     then show ?case 
       using SoundPostulateCL3S by blast
   next
-    case (positulatesCL4 X Y Z)
+    case (postulateCL4 X Y Z)
     then show ?case 
       using SoundPostulateCL4 by blast
   next
-    case (positulatesCL4S X Z Y)
+    case (postulateCL4S X Z Y)
     then show ?case 
       using SoundPostulateCL4S by blast
   next
-    case (positulatesCL5 X Y)
+    case (postulateCL5 X Y)
     then show ?case 
       using SoundPostulateCL5 by blast
   next
-    case (positulatesCL5S Y X)
+    case (postulateCL5S Y X)
     then show ?case 
       using SoundPostulateCL5S by blast
   next
-    case (positulatesCL6 Y X)
+    case (postulateCL6 Y X)
     then show ?case 
       using SoundPostulateCL6 by blast
   next
-    case (positulatesCL6S X Y)
+    case (postulateCL6S X Y)
     then show ?case 
       using SoundPostulateCL6S by blast
   next
-    case (positulatesCL7 X Y Z)
+    case (postulateCL7 X Y Z)
     then show ?case 
       using SoundPostulateCL7 by blast
   next
-    case (positulatesCL7S X Y Z)
+    case (postulateCL7S X Y Z)
     then show ?case 
       using SoundPostulateCL7S by blast
   next
-    case (positulatesCL8 X Y Z)
+    case (postulateCL8 X Y Z)
     then show ?case 
       using SoundPostulateCL8 by blast
   next
-    case (positulatesCL8S Y X Z)
+    case (postulateCL8S Y X Z)
     then show ?case 
       using SoundPostulateCL8S by blast
   next

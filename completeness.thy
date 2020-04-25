@@ -24,7 +24,7 @@ next
   then show ?case 
   proof-
     have "\<P>(\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C \<sharp> (formulaA F))" 
-      using Neg.IH equiv positulatesCL5 by blast
+      using Neg.IH equiv postulateCL5 by blast
     then have "\<P>(\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C (formula (\<not>\<^sub>B F)))"
       by (simp add: notR)
     then have "\<P>((formulaA (\<not>\<^sub>B F)) \<turnstile>\<^sub>C (formula (\<not>\<^sub>B F)))"
@@ -45,7 +45,7 @@ next
     then have "\<P>(((formulaA F2) ;\<^sub>A (formulaA F1)) \<turnstile>\<^sub>C formula F2)"
       using WkL by auto
     then have "\<P>(((formulaA F1) ;\<^sub>A (formulaA F2)) \<turnstile>\<^sub>C formula F2)" 
-      using equiv positulatesCL1 positulatesCL2 by blast
+      using equiv postulateCL1 postulateCL2 by blast
     then have "\<P>((formulaA (F1 \<and>\<^sub>B F2)) \<turnstile>\<^sub>C formula F2)"
       by (simp add: andL)
     note \<open>\<P>((formulaA (F1 \<and>\<^sub>B F2)) \<turnstile>\<^sub>C formula F1)\<close> \<open>\<P>((formulaA (F1 \<and>\<^sub>B F2)) \<turnstile>\<^sub>C formula F2)\<close>
@@ -68,7 +68,7 @@ next
   proof -
     note \<open>\<P> (formulaA F1 \<turnstile>\<^sub>C formula F1)\<close>
     then have "\<P>(formulaA F1 \<turnstile>\<^sub>C ((formula F1) ; (formula F2)))"
-      using WkL equiv positulatesCL4 by blast
+      using WkL equiv postulateCL4 by blast
     note \<open>\<P> (formulaA F2 \<turnstile>\<^sub>C formula F2)\<close>
     then have "\<P>(formulaA F2 \<turnstile>\<^sub>C ((formula F1) ; (formula F2)))"
       using WkR by auto
@@ -85,7 +85,7 @@ next
     then have "\<P>(formulaA (F1 \<rightarrow>\<^sub>B F2) \<turnstile>\<^sub>C ((\<sharp> (formulaA F1)) ; (formula F2)))" 
       using impL by blast
     then have "\<P>(((formulaA (F1 \<rightarrow>\<^sub>B F2)) ;\<^sub>A (formulaA F1)) \<turnstile>\<^sub>C formula F2)"
-      using equiv positulatesCL1S by blast
+      using equiv postulateCL1S by blast
     then show ?case 
       by (simp add: impR)
   qed
@@ -97,7 +97,7 @@ next
     then have "\<P>(formulaA (F1 \<rightarrow>\<^emph>\<^sub>B F2) \<turnstile>\<^sub>C (((formulaA F1)) \<rightarrow>\<circ> (formula F2)))" 
       using impMultL by blast
     then have "\<P>((formulaA (F1 \<rightarrow>\<^emph>\<^sub>B F2) ,\<^sub>A (formulaA F1)) \<turnstile>\<^sub>C formula F2 )"
-      using equiv positulatesCL7S by blast
+      using equiv postulateCL7S by blast
     then show ?case
       by (simp add: impMultR)
   qed
@@ -118,7 +118,7 @@ case (SharpA x)
   proof-
     note \<open>\<P> (formulaA (\<Upsilon> x) \<turnstile>\<^sub>C x)\<close>
     then have "\<P> ((\<sharp>\<^sub>A x) \<turnstile>\<^sub>C (\<sharp>(formulaA(\<Upsilon> x))))" 
-      using equiv positulatesCL5 by blast
+      using equiv postulateCL5 by blast
     then have "\<P> ((\<sharp>\<^sub>A x) \<turnstile>\<^sub>C formula (\<not>\<^sub>B (\<Upsilon> x)))"
       by (simp add: notR)
     then show ?case 
@@ -133,7 +133,7 @@ case (SemiColonA x1 x2)
       using WkL by blast
     note \<open>\<P> (x2 \<turnstile>\<^sub>C formula (\<Psi> x2))\<close>
     then have "\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x2))" 
-      using WkR equiv positulatesCL2 by blast
+      using WkR equiv postulateCL2 by blast
     note\<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x1))\<close> \<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x2))\<close>
     then show ?case 
       using andR by auto
@@ -166,7 +166,7 @@ next
   proof -
     note\<open>\<P> (x \<turnstile>\<^sub>C formula (\<Psi> x))\<close>
     then have "\<P>(\<sharp>\<^sub>A (formula (\<Psi> x)) \<turnstile>\<^sub>C \<sharp> x)"
-      using equiv positulatesCL5 by blast
+      using equiv postulateCL5 by blast
     then have "\<P>(formulaA (\<not>\<^sub>B (\<Psi> x)) \<turnstile>\<^sub>C \<sharp> x)"
       using notL by blast
     then show ?case
@@ -178,7 +178,7 @@ next
   proof-
     note \<open>\<P> (formulaA (\<Upsilon> x1) \<turnstile>\<^sub>C x1)\<close>
     then have "\<P> (formulaA (\<Upsilon> x1) \<turnstile>\<^sub>C x1 ; x2)" 
-      using WkL equiv positulatesCL4 by blast
+      using WkL equiv postulateCL4 by blast
     note \<open>\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x2)\<close>
     then have "\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x1 ; x2)"
       using WkR by auto
@@ -217,11 +217,11 @@ case (SharpA x)
   proof-
     note\<open>\<P> (\<sharp>\<^sub>A x \<turnstile>\<^sub>C Y)\<close>
     then have "\<P> (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C x)" 
-      by (metis equiv positulatesCL5 positulatesCL5S positulatesCL6)
+      by (metis equiv postulateCL5 postulateCL5S postulateCL6)
     then have "\<P> (\<sharp>\<^sub>A Y \<turnstile>\<^sub>C formula (\<Upsilon> x))" 
       by (simp add: SharpA.IH)
     then have "\<P> (\<sharp>\<^sub>A (formula (\<Upsilon> x)) \<turnstile>\<^sub>C Y )" 
-      by (metis equiv positulatesCL5 positulatesCL5S positulatesCL6)
+      by (metis equiv postulateCL5 postulateCL5S postulateCL6)
     then have "\<P> (formulaA (\<not>\<^sub>B (\<Upsilon> x)) \<turnstile>\<^sub>C Y )"
       by (simp add: notL)
     thus  "\<P> (formulaA (\<Psi> (\<sharp>\<^sub>A x)) \<turnstile>\<^sub>C Y)" 
@@ -233,15 +233,15 @@ next
   proof -
       note \<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C Y)\<close>
     then have "\<P>(x1 \<turnstile>\<^sub>C \<sharp>x2 ; Y)" 
-      using equiv positulatesCL1 by blast
+      using equiv postulateCL1 by blast
     then have "\<P>(formulaA (\<Psi> x1) \<turnstile>\<^sub>C \<sharp>x2 ; Y)"
       by (simp add: SemiColonA.IH(1))
     then have "\<P>(x2  \<turnstile>\<^sub>C \<sharp>(formulaA (\<Psi> x1)) ; Y)"
-      using equiv positulatesCL1 positulatesCL2 by blast
+      using equiv postulateCL1 postulateCL2 by blast
     then have "\<P>(formulaA (\<Psi> x2)  \<turnstile>\<^sub>C \<sharp>(formulaA (\<Psi> x1)) ; Y)" 
       using SemiColonA.IH(2) by blast
     then have "\<P>(formulaA (\<Psi> x1) ;\<^sub>A formulaA (\<Psi> x2)  \<turnstile>\<^sub>C  Y)"
-      using equiv positulatesCL2 by blast
+      using equiv postulateCL2 by blast
     then have "\<P>(formulaA ((\<Psi> x1) \<and>\<^sub>B (\<Psi> x2))  \<turnstile>\<^sub>C  Y)"
       using andL by blast
     thus "\<P> (formulaA (\<Psi> (x1 ;\<^sub>A x2)) \<turnstile>\<^sub>C Y)" 
@@ -257,15 +257,15 @@ next
   proof -
     note\<open>\<P> (x1 ,\<^sub>A x2 \<turnstile>\<^sub>C Y)\<close>
     then have "\<P> (x1 \<turnstile>\<^sub>C x2 \<rightarrow>\<circ> Y)" 
-      using equiv positulatesCL7 by blast
+      using equiv postulateCL7 by blast
     then have "\<P> (formulaA (\<Psi> x1) \<turnstile>\<^sub>C x2 \<rightarrow>\<circ> Y)" 
       by (simp add: CommaA.IH(1))
     then have "\<P> (x2  \<turnstile>\<^sub>C formulaA (\<Psi> x1) \<rightarrow>\<circ> Y)" 
-      using equiv positulatesCL7 positulatesCL8 by blast
+      using equiv postulateCL7 postulateCL8 by blast
     then have "\<P> (formulaA (\<Psi> x2)  \<turnstile>\<^sub>C formulaA (\<Psi> x1) \<rightarrow>\<circ> Y)" 
       by (simp add: CommaA.IH(2))
     then have "\<P> (formulaA (\<Psi> x1) ,\<^sub>A  formulaA (\<Psi> x2)  \<turnstile>\<^sub>C Y)" 
-      using equiv positulatesCL8 by blast
+      using equiv postulateCL8 by blast
     then have "\<P> (formulaA ((\<Psi> x1) *\<^sub>B (\<Psi> x2))  \<turnstile>\<^sub>C Y)" 
       by (simp add: andMultL)
     thus "\<P> (formulaA (\<Psi>(x1 ,\<^sub>A x2))  \<turnstile>\<^sub>C Y)" by simp
@@ -284,11 +284,11 @@ next
   proof -
     note\<open>\<P> (X \<turnstile>\<^sub>C \<sharp> y)\<close>
     then have "\<P> (y \<turnstile>\<^sub>C \<sharp>X)" 
-      using equiv positulatesCL5 positulatesCL5S positulatesCL6 by blast
+      using equiv postulateCL5 postulateCL5S postulateCL6 by blast
     then have "\<P> (formulaA (\<Psi> y) \<turnstile>\<^sub>C \<sharp>X )"
       using Sharp.IH by blast
     then have "\<P> (X  \<turnstile>\<^sub>C \<sharp>(formulaA (\<Psi> y)))" 
-      using equiv positulatesCL5 positulatesCL5S positulatesCL6 by blast
+      using equiv postulateCL5 postulateCL5S postulateCL6 by blast
     then have "\<P> (X  \<turnstile>\<^sub>C (formula (\<not>\<^sub>B(\<Psi> y))))"
       by (simp add: notR)
     thus "\<P> (X \<turnstile>\<^sub>C formula (\<Upsilon> (\<sharp> y)))" by simp
@@ -299,15 +299,15 @@ next
   proof -
     note\<open>\<P> (X \<turnstile>\<^sub>C y1 ; y2)\<close>
     then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A y1) \<turnstile>\<^sub>C y2)"
-      using equiv positulatesCL3 by blast
+      using equiv postulateCL3 by blast
     then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A y1) \<turnstile>\<^sub>C formula (\<Upsilon> y2))"
       by (simp add: SemiColon.IH(2))
     then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A (formula (\<Upsilon> y2))) \<turnstile>\<^sub>C y1)" 
-      using equiv positulatesCL3 positulatesCL4 by blast
+      using equiv postulateCL3 postulateCL4 by blast
     then have "\<P> (X ;\<^sub>A (\<sharp>\<^sub>A (formula (\<Upsilon> y2))) \<turnstile>\<^sub>C formula (\<Upsilon> y1))" 
       using SemiColon.IH(1) by blast
     then have "\<P> (X \<turnstile>\<^sub>C formula (\<Upsilon> y1) ; formula (\<Upsilon> y2))"
-      using equiv positulatesCL4 by blast
+      using equiv postulateCL4 by blast
     then have "\<P> (X \<turnstile>\<^sub>C formula ((\<Upsilon> y1) \<or>\<^sub>B (\<Upsilon> y2)))" 
       using orR by blast
     thus "\<P>(X \<turnstile>\<^sub>C formula (\<Upsilon> (y1 ; y2)))" by simp
@@ -318,15 +318,15 @@ next
   proof -
     note\<open>\<P> (X \<turnstile>\<^sub>C x1 \<rightarrow>\<circ> y2)\<close>
     then have "\<P>(x1 \<turnstile>\<^sub>C X \<rightarrow>\<circ> y2)" 
-      using equiv positulatesCL7 positulatesCL8 by blast
+      using equiv postulateCL7 postulateCL8 by blast
     then have "\<P>(formulaA (\<Psi> x1) \<turnstile>\<^sub>C X \<rightarrow>\<circ> y2)" 
       using DotArrow.IH(1) by blast
     then have "\<P>(formulaA (\<Psi> x1) ,\<^sub>A X \<turnstile>\<^sub>C y2)" 
-      using equiv positulatesCL7 positulatesCL8 by blast 
+      using equiv postulateCL7 postulateCL8 by blast 
     then have "\<P>(formulaA (\<Psi> x1) ,\<^sub>A X \<turnstile>\<^sub>C formula (\<Upsilon> y2))"
       by (simp add: DotArrow.IH(2))
     then have "\<P>(X ,\<^sub>A formulaA (\<Psi> x1) \<turnstile>\<^sub>C formula (\<Upsilon> y2))"
-      using equiv positulatesCL7 positulatesCL8 by blast
+      using equiv postulateCL7 postulateCL8 by blast
     then have "\<P> (X \<turnstile>\<^sub>C formula ((\<Psi> x1) \<rightarrow>\<^emph>\<^sub>B(\<Upsilon> y2)))"
       by (simp add: impMultR)
     thus "\<P> (X \<turnstile>\<^sub>C formula (\<Upsilon> (x1 \<rightarrow>\<circ> y2)))" 
@@ -370,7 +370,7 @@ next
     hence "\<P>(formulaA F \<turnstile>\<^sub>C \<sharp>(formulaA G) ; formula H)"
       using cut by blast
     hence "\<P>(formulaA F ;\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
-      using equiv positulatesCL1 positulatesCL2 by blast
+      using equiv postulateCL1 postulateCL2 by blast
     thus ?case 
       using andL by blast
   qed
@@ -383,12 +383,12 @@ next
   proof-
     have"\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
     hence"\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C \<sharp>(formulaA F))" 
-      using equiv positulatesCL5 by blast
+      using equiv postulateCL5 by blast
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C (formula \<bottom>\<^sub>B) ; \<sharp>(formulaA F))"using WkR by simp
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C  \<sharp>(formulaA F) ; (formula \<bottom>\<^sub>B))" 
-      using equiv positulatesCL3 positulatesCL4 by blast
+      using equiv postulateCL3 postulateCL4 by blast
     hence "\<P>(\<sharp>\<^sub>A(formula F) ;\<^sub>A formulaA F \<turnstile>\<^sub>C (formula \<bottom>\<^sub>B))" 
-      using equiv positulatesCL1S by blast
+      using equiv postulateCL1S by blast
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C formula(F \<rightarrow>\<^sub>B \<bottom>\<^sub>B))" 
       by (simp add: impR)
     thus ?case 
@@ -413,11 +413,11 @@ next
   proof-
     have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
     hence"\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C \<sharp>(formulaA F))" 
-      using equiv positulatesCL5 by blast
+      using equiv postulateCL5 by blast
     hence "\<P>(\<sharp>\<^sub>A(formula F) \<turnstile>\<^sub>C formula(\<not>\<^sub>B F))" 
       using notR by simp
     hence "\<P>(\<sharp>\<^sub>A(formula (\<not>\<^sub>B F)) \<turnstile>\<^sub>C formula F)"
-      by (metis \<Upsilon>.simps(1) \<Upsilon>.simps(3) \<open>\<P> (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C \<sharp> (formulaA F))\<close> \<Psi>.simps(1) \<Psi>.simps(3) \<Psi>L \<Psi>R cut equiv positulatesCL6)
+      by (metis \<Upsilon>.simps(1) \<Upsilon>.simps(3) \<open>\<P> (\<sharp>\<^sub>A (formula F) \<turnstile>\<^sub>C \<sharp> (formulaA F))\<close> \<Psi>.simps(1) \<Psi>.simps(3) \<Psi>L \<Psi>R cut equiv postulateCL6)
     thus ?case
       by (simp add: notL)
   qed
@@ -444,7 +444,7 @@ next
     hence "\<P>((formulaA G) ;\<^sub>A (formulaA F) \<turnstile>\<^sub>C formula G)" 
       using WkL by blast
     hence "\<P>((formulaA F) ;\<^sub>A (formulaA G) \<turnstile>\<^sub>C formula G)" 
-      using equiv positulatesCL1 positulatesCL2 by blast
+      using equiv postulateCL1 postulateCL2 by blast
     thus ?case 
       by (simp add: andL)
   qed
@@ -455,7 +455,7 @@ next
     have "\<P>(formulaA F \<turnstile>\<^sub>C formula F)" using identity by simp
     hence "\<P>(formulaA F \<turnstile>\<^sub>C formula G ; formula F)" using WkR by blast
     hence "\<P>(formulaA F \<turnstile>\<^sub>C formula F ; formula G)"
-      using equiv positulatesCL3 positulatesCL4 by blast
+      using equiv postulateCL3 postulateCL4 by blast
     thus ?case 
       by (simp add: orR)
   qed
@@ -477,11 +477,11 @@ next
     hence "\<P>(\<oslash> ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula F)"
       using nilMultL_sym by blast
     hence "\<P>(\<oslash> \<turnstile>\<^sub>C formulaA F \<rightarrow>\<circ> formula F)" 
-      using equiv positulatesCL7 by blast
+      using equiv postulateCL7 by blast
     hence "\<P>(formulaA \<top>\<^sup>*\<^sub>B \<turnstile>\<^sub>C formulaA F \<rightarrow>\<circ> formula F)"
       using TopMultL by blast
     hence "\<P>(formulaA F ,\<^sub>A formulaA \<top>\<^sup>*\<^sub>B \<turnstile>\<^sub>C  formula F)" 
-      using equiv positulatesCL8 by blast
+      using equiv postulateCL8 by blast
     thus ?case 
       by (simp add: andMultL)
   qed
@@ -493,7 +493,7 @@ next
     hence "\<P>(formulaA F ,\<^sub>A \<oslash> \<turnstile>\<^sub>C formula (F *\<^sub>B \<top>\<^sup>*\<^sub>B))"
       using TopMultR andMultR by blast
     hence "\<P>(\<oslash> ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula (F *\<^sub>B \<top>\<^sup>*\<^sub>B))" 
-      using equiv positulatesCL7 positulatesCL8 by blast
+      using equiv postulateCL7 postulateCL8 by blast
     thus ?case 
       using nilMultL by blast
   qed
@@ -520,7 +520,7 @@ next
     hence "\<P> (formulaA F \<turnstile>\<^sub>C formulaA G \<rightarrow>\<circ> formula H)" 
       using cut identity impMultL by blast
     hence "\<P> (formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula H)"
-      using equiv positulatesCL7S by blast
+      using equiv postulateCL7S by blast
     thus ?case 
       by (simp add: andMultL)
   qed
@@ -559,7 +559,7 @@ next
     have "\<P>(formulaA G ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
       using andMultR identity by auto
     hence "\<P>(formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
-      using equiv positulatesCL7 positulatesCL8 by blast
+      using equiv postulateCL7 postulateCL8 by blast
     thus ?case
       by (simp add: andMultL)
   qed

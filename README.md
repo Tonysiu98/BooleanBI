@@ -22,3 +22,7 @@ soundness.thy contains soundness theorem of BBI display calculus
 
 completeness.thy contains completeness theorem of BBI display calculus
 
+## Disclaimer
+This code is submitted as part requirement for the MY DEGREE at UCL. It is substantially the result of my own work except where explicitly indicated in the text. Either: The code may be freely copied and distributed provided the source is explicitly acknowledged
+Or:
+The code will be distributed to the internal and external examiners, but thereafter may not be copied or distributed except with permission from the author.
