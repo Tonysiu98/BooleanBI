@@ -15,7 +15,7 @@ datatype BBI_form =
   | MCon BBI_form BBI_form  (infix "*\<^sub>B" 101)
   | Dis BBI_form BBI_form   (infix "\<or>\<^sub>B" 101)
   | Imp  BBI_form BBI_form  (infix "\<rightarrow>\<^sub>B" 101)
-  | Mimp  BBI_form BBI_form (infix "\<rightarrow>\<^emph>\<^sub>B" 101)
+  | Mimp  BBI_form BBI_form (infix "\<rightarrow>*\<^sub>B" 101)
 
 
 section "BBI formula Axioms"
@@ -39,8 +39,8 @@ DisjI1 : "G1 \<turnstile>\<^sub>B G1 \<or>\<^sub>B G2" |
 DisjI2 : "G2 \<turnstile>\<^sub>B G1 \<or>\<^sub>B G2"|
 Topl : "(F *\<^sub>B \<top>\<^sup>*\<^sub>B) \<turnstile>\<^sub>B F"|
 Topr : "F \<turnstile>\<^sub>B (F *\<^sub>B \<top>\<^sup>*\<^sub>B)"|
-ImpstarT : "F *\<^sub>B G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B (G \<rightarrow>\<^emph>\<^sub>B H)"|
-ImpstarB : "F \<turnstile>\<^sub>B (G \<rightarrow>\<^emph>\<^sub>B H) \<Longrightarrow> F *\<^sub>B G \<turnstile>\<^sub>B H"|
+ImpstarT : "F *\<^sub>B G \<turnstile>\<^sub>B H \<Longrightarrow> F \<turnstile>\<^sub>B (G \<rightarrow>*\<^sub>B H)"|
+ImpstarB : "F \<turnstile>\<^sub>B (G \<rightarrow>*\<^sub>B H) \<Longrightarrow> F *\<^sub>B G \<turnstile>\<^sub>B H"|
 Assocl: "F *\<^sub>B (G *\<^sub>B H) \<turnstile>\<^sub>B (F *\<^sub>B G) *\<^sub>B H"|
 Assocr: "(F *\<^sub>B G) *\<^sub>B H \<turnstile>\<^sub>B F *\<^sub>B (G *\<^sub>B H)"|
 Comm : "(F *\<^sub>B G) \<turnstile>\<^sub>B (G *\<^sub>B F)"|
@@ -78,7 +78,7 @@ primrec
 "\<Upsilon> \<emptyset> = \<bottom>\<^sub>B "|
 "\<Upsilon> (\<sharp> X) =  \<not>\<^sub>B (\<Psi> X)"|
 "\<Upsilon> (X ; Y) = \<Upsilon> X \<or>\<^sub>B \<Upsilon> Y"|
-"\<Upsilon> (X \<rightarrow>\<circ> Y) = \<Psi> X \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Y"
+"\<Upsilon> (X \<rightarrow>\<circ> Y) = \<Psi> X \<rightarrow>*\<^sub>B \<Upsilon> Y"
 
 datatype Consecution = Consecution Antecedent_Structure Consequent_Structure (infix "\<turnstile>\<^sub>C" 50)
 
@@ -145,10 +145,10 @@ CtrR: "\<P> (X \<turnstile>\<^sub>C Y ; Y) \<Longrightarrow> \<P> (X \<turnstile
 (*Logical Rules for DL_LM*)
 TopMultL : "\<P> (\<oslash> \<turnstile>\<^sub>C X) \<Longrightarrow> \<P> (formulaA \<top>\<^sup>*\<^sub>B \<turnstile>\<^sub>C X)"|
 andMultL : "\<P> ((formulaA F ,\<^sub>A formulaA G) \<turnstile>\<^sub>C X) \<Longrightarrow> \<P> (formulaA (F *\<^sub>B G) \<turnstile>\<^sub>C X)"|
-impMultL: "\<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (formulaA G \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (formulaA (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>C X \<rightarrow>\<circ> Y)"|
+impMultL: "\<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (formulaA G \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (formulaA (F \<rightarrow>*\<^sub>B G) \<turnstile>\<^sub>C X \<rightarrow>\<circ> Y)"|
 TopMultR: "\<P> (\<oslash> \<turnstile>\<^sub>C formula \<top>\<^sup>*\<^sub>B)"|
 andMultR: "\<P> (X \<turnstile>\<^sub>C formula F) \<Longrightarrow> \<P> (Y \<turnstile>\<^sub>C formula G) \<Longrightarrow> \<P> (X ,\<^sub>A Y \<turnstile>\<^sub>C formula (F *\<^sub>B G))"|
-impMultR: "\<P> (X ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula G) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C formula (F \<rightarrow>\<^emph>\<^sub>B G))"|
+impMultR: "\<P> (X ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula G) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C formula (F \<rightarrow>*\<^sub>B G))"|
 (*Structural Rules for DL_LM*)
 nilMultL: "\<P> (\<oslash> ,\<^sub>A X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (X \<turnstile>\<^sub>C Y)" |
 nilMultL_sym: "\<P> (X \<turnstile>\<^sub>C Y) \<Longrightarrow> \<P> (\<oslash> ,\<^sub>A X \<turnstile>\<^sub>C Y)"|

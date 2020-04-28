@@ -373,8 +373,8 @@ lemma SoundPostulateCL7 : "Valid (X ,\<^sub>A Y \<turnstile>\<^sub>C Z) \<Longri
   apply simp
 proof - 
   assume "\<Psi> X *\<^sub>B \<Psi> Y \<turnstile>\<^sub>B \<Upsilon> Z" 
-  then have "\<Psi> X \<turnstile>\<^sub>B \<Psi> Y  \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Z" using ImpstarT by simp
-  then show "\<Psi> X *\<^sub>B \<Psi> Y \<turnstile>\<^sub>B \<Upsilon> Z \<Longrightarrow> \<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Z" by simp
+  then have "\<Psi> X \<turnstile>\<^sub>B \<Psi> Y  \<rightarrow>*\<^sub>B \<Upsilon> Z" using ImpstarT by simp
+  then show "\<Psi> X *\<^sub>B \<Psi> Y \<turnstile>\<^sub>B \<Upsilon> Z \<Longrightarrow> \<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>*\<^sub>B \<Upsilon> Z" by simp
 qed
 
 lemma SoundPostulateCL7S : "Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z) \<Longrightarrow> Valid (X ,\<^sub>A Y \<turnstile>\<^sub>C Z)"
@@ -384,10 +384,10 @@ lemma SoundPostulateCL7S : "Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ>
 lemma SoundPostulateCL8 : "Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z) \<Longrightarrow> Valid (Y ,\<^sub>A X \<turnstile>\<^sub>C Z)"
   apply simp 
 proof -
-  assume "\<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Z"
+  assume "\<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>*\<^sub>B \<Upsilon> Z"
   then have "\<Psi> X *\<^sub>B \<Psi> Y \<turnstile>\<^sub>B \<Upsilon> Z" using ImpstarB by blast
   then have "\<Psi> Y *\<^sub>B \<Psi> X \<turnstile>\<^sub>B \<Upsilon> Z" using Comm MP by blast
-  thus "\<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Z \<Longrightarrow> \<Psi> Y *\<^sub>B \<Psi> X \<turnstile>\<^sub>B \<Upsilon> Z" by simp
+  thus "\<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>*\<^sub>B \<Upsilon> Z \<Longrightarrow> \<Psi> Y *\<^sub>B \<Psi> X \<turnstile>\<^sub>B \<Upsilon> Z" by simp
 qed
 
 lemma SoundPostulateCL8S : "Valid (Y ,\<^sub>A X \<turnstile>\<^sub>C Z) \<Longrightarrow> Valid (X \<turnstile>\<^sub>C Y \<rightarrow>\<circ> Z)"
@@ -396,7 +396,7 @@ proof-
   assume "\<Psi> Y *\<^sub>B \<Psi> X \<turnstile>\<^sub>B \<Upsilon> Z"
   then have "\<Psi> X *\<^sub>B \<Psi> Y \<turnstile>\<^sub>B \<Upsilon> Z" 
     using Comm MP by blast
-  then show "\<Psi> Y *\<^sub>B \<Psi> X \<turnstile>\<^sub>B \<Upsilon> Z \<Longrightarrow> \<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Z" 
+  then show "\<Psi> Y *\<^sub>B \<Psi> X \<turnstile>\<^sub>B \<Upsilon> Z \<Longrightarrow> \<Psi> X \<turnstile>\<^sub>B \<Psi> Y \<rightarrow>*\<^sub>B \<Upsilon> Z" 
     using ImpstarT by blast
 qed
 
@@ -612,19 +612,19 @@ next
   proof -
     note\<open>Valid (X \<turnstile>\<^sub>C formula F)\<close>
     then have "\<Psi> X \<turnstile>\<^sub>B F" by simp
-    have "F \<rightarrow>\<^emph>\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>\<^emph>\<^sub>B G" using Ax by simp 
-    then have "F \<turnstile>\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<rightarrow>\<^emph>\<^sub>B G" 
+    have "F \<rightarrow>*\<^sub>B G \<turnstile>\<^sub>B F \<rightarrow>*\<^sub>B G" using Ax by simp 
+    then have "F \<turnstile>\<^sub>B (F \<rightarrow>*\<^sub>B G) \<rightarrow>*\<^sub>B G" 
       using Comm ImpstarB ImpstarT MP by blast
-    note\<open>\<Psi> X \<turnstile>\<^sub>B F\<close>\<open>F \<turnstile>\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<rightarrow>\<^emph>\<^sub>B G\<close>
-    then have "\<Psi> X \<turnstile>\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<rightarrow>\<^emph>\<^sub>B G" using MP 
+    note\<open>\<Psi> X \<turnstile>\<^sub>B F\<close>\<open>F \<turnstile>\<^sub>B (F \<rightarrow>*\<^sub>B G) \<rightarrow>*\<^sub>B G\<close>
+    then have "\<Psi> X \<turnstile>\<^sub>B (F \<rightarrow>*\<^sub>B G) \<rightarrow>*\<^sub>B G" using MP 
       by blast
-    then have "\<Psi> X *\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>B G" 
+    then have "\<Psi> X *\<^sub>B (F \<rightarrow>*\<^sub>B G) \<turnstile>\<^sub>B G" 
       using ImpstarB by simp
     note\<open>Valid (formulaA G \<turnstile>\<^sub>C Y)\<close>
     then have "G \<turnstile>\<^sub>B \<Upsilon> Y" by simp
-    note\<open>G \<turnstile>\<^sub>B \<Upsilon> Y\<close>\<open>\<Psi> X *\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>B G\<close>
-    then have "\<Psi> X *\<^sub>B (F \<rightarrow>\<^emph>\<^sub>B G) \<turnstile>\<^sub>B \<Upsilon> Y"  using MP by blast
-    then have "F \<rightarrow>\<^emph>\<^sub>B G \<turnstile>\<^sub>B \<Psi> X \<rightarrow>\<^emph>\<^sub>B \<Upsilon> Y" 
+    note\<open>G \<turnstile>\<^sub>B \<Upsilon> Y\<close>\<open>\<Psi> X *\<^sub>B (F \<rightarrow>*\<^sub>B G) \<turnstile>\<^sub>B G\<close>
+    then have "\<Psi> X *\<^sub>B (F \<rightarrow>*\<^sub>B G) \<turnstile>\<^sub>B \<Upsilon> Y"  using MP by blast
+    then have "F \<rightarrow>*\<^sub>B G \<turnstile>\<^sub>B \<Psi> X \<rightarrow>*\<^sub>B \<Upsilon> Y" 
       using Comm ImpstarT MP by blast
     then show ?case
       by simp
