@@ -70,14 +70,14 @@ primrec
   where
 "\<Psi> (formulaA F)  = F"|
 "\<Psi> \<emptyset>\<^sub>A = \<top>\<^sub>B"|
-"\<Psi> (\<sharp>\<^sub>A X) = \<not>\<^sub>B (\<Upsilon> X) "|
-"\<Psi> (X ;\<^sub>A Y) = (\<Psi> X) \<and>\<^sub>B (\<Psi> Y)"|
+"\<Psi> (\<sharp>\<^sub>A Y) = \<not>\<^sub>B (\<Upsilon> Y) "|
+"\<Psi> (X1 ;\<^sub>A X2) = (\<Psi> X1) \<and>\<^sub>B (\<Psi> X2)"|
 "\<Psi> \<oslash> = \<top>\<^sup>*\<^sub>B "|
-"\<Psi> (X ,\<^sub>A Y) = (\<Psi> X) *\<^sub>B (\<Psi> Y) "|
+"\<Psi> (X1 ,\<^sub>A X2) = (\<Psi> X1) *\<^sub>B (\<Psi> X2) "|
 "\<Upsilon> (formula F) = F"|
 "\<Upsilon> \<emptyset> = \<bottom>\<^sub>B "|
 "\<Upsilon> (\<sharp> X) =  \<not>\<^sub>B (\<Psi> X)"|
-"\<Upsilon> (X ; Y) = \<Upsilon> X \<or>\<^sub>B \<Upsilon> Y"|
+"\<Upsilon> (Y1 ; Y2) = \<Upsilon> Y1 \<or>\<^sub>B \<Upsilon> Y2"|
 "\<Upsilon> (X \<rightarrow>\<circ> Y) = \<Psi> X \<rightarrow>*\<^sub>B \<Upsilon> Y"
 
 datatype Consecution = Consecution Antecedent_Structure Consequent_Structure (infix "\<turnstile>\<^sub>C" 50)
