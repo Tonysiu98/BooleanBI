@@ -13,7 +13,7 @@ proof-
   proof(induction rule: pos_ant_neg_con.inducts)
 case (1 X)
 then show ?case
-  using display_refl by auto
+  using display_refl by blast
 next
   case (2 Z X)
   then show ?case
@@ -68,7 +68,7 @@ proof-
   proof(induction rule: pos_con_neg_ant.inducts)
 case (1 X)
 then show ?case 
-  using display_refl by auto
+  using display_refl by blast
 next
 case (2 Z X)
 then show ?case 

@@ -43,7 +43,7 @@ next
       by (simp add: andL)
     note \<open>\<P> (formulaA F2 \<turnstile>\<^sub>C formula F2)\<close>
     then have "\<P>(((formulaA F2) ;\<^sub>A (formulaA F1)) \<turnstile>\<^sub>C formula F2)"
-      using WkL by auto
+      using WkL by simp
     then have "\<P>(((formulaA F1) ;\<^sub>A (formulaA F2)) \<turnstile>\<^sub>C formula F2)" 
       using equiv postulateCL1 postulateCL2 by blast
     then have "\<P>((formulaA (F1 \<and>\<^sub>B F2)) \<turnstile>\<^sub>C formula F2)"
@@ -71,7 +71,7 @@ next
       using WkL equiv postulateCL4 by blast
     note \<open>\<P> (formulaA F2 \<turnstile>\<^sub>C formula F2)\<close>
     then have "\<P>(formulaA F2 \<turnstile>\<^sub>C ((formula F1) ; (formula F2)))"
-      using WkR by auto
+      using WkR by simp
     note\<open>\<P>(formulaA F1 \<turnstile>\<^sub>C ((formula F1) ; (formula F2)))\<close>
         \<open>\<P>(formulaA F2 \<turnstile>\<^sub>C ((formula F1) ; (formula F2)))\<close>
     then show ?case 
@@ -122,7 +122,7 @@ case (SharpA x)
     then have "\<P> ((\<sharp>\<^sub>A x) \<turnstile>\<^sub>C formula (\<not>\<^sub>B (\<Upsilon> x)))"
       by (simp add: notR)
     then show ?case 
-      by auto
+      by simp
   qed
 next
 case (SemiColonA x1 x2)
@@ -136,7 +136,7 @@ case (SemiColonA x1 x2)
       using WkR equiv postulateCL2 by blast
     note\<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x1))\<close> \<open>\<P> (x1 ;\<^sub>A x2 \<turnstile>\<^sub>C formula (\<Psi> x2))\<close>
     then show ?case 
-      using andR by auto
+      using andR by simp
   qed
 next
   case MultNilA
@@ -181,7 +181,7 @@ next
       using WkL equiv postulateCL4 by blast
     note \<open>\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x2)\<close>
     then have "\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x1 ; x2)"
-      using WkR by auto
+      using WkR by simp
     note \<open>\<P> (formulaA (\<Upsilon> x1) \<turnstile>\<^sub>C x1 ; x2)\<close> \<open>\<P> (formulaA (\<Upsilon> x2) \<turnstile>\<^sub>C x1 ; x2)\<close>
     then have "\<P> (formulaA ((\<Upsilon> x1) \<or>\<^sub>B(\<Upsilon> x2)) \<turnstile>\<^sub>C x1 ; x2)"
       by (simp add: orL)
@@ -429,7 +429,7 @@ next
   then show ?case 
   proof-
     have "\<P>(formulaA G ,\<^sub>A formulaA F \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
-      using andMultR identity by auto
+      using andMultR identity by simp
     hence "\<P>(formulaA F ,\<^sub>A formulaA G \<turnstile>\<^sub>C formula (G *\<^sub>B F))" 
       using equiv postulateCL7 postulateCL8 by blast
     thus ?case
